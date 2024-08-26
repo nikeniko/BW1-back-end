@@ -1,4 +1,4 @@
-package luisquiroz;
+package UrbanTransit;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
