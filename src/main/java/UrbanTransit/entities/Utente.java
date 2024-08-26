@@ -22,6 +22,9 @@ public class Utente {
     @Column
     private LocalDate data_nascita;
 
+    @OneToOne(mappedBy = "utente", cascade = CascadeType.ALL)
+    private Tessera tessera;
+
 
 
     // getter e setter e costruttore

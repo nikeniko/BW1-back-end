@@ -4,6 +4,7 @@ package UrbanTransit.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -26,13 +27,21 @@ public class Tessera {
     @OneToOne
     private Utente utente;
 
+    @OneToMany(mappedBy = "tessera")
+    private List<Abbonamento> abbonamenti;
+
+    @OneToMany(mappedBy = "tessera")
+    private List<Biglietto> biglietti;
+
+
     public Tessera() {
     }
 
-    public Tessera(LocalDate data_inizio, LocalDate data_scadenza, boolean stato_tessera) {
+    public Tessera(LocalDate data_inizio, boolean stato_tessera, Utente utente) {
         this.data_inizio = data_inizio;
-        this.data_scadenza = data_inizio.plusDays(365);
+        this.data_scadenza = data_inizio.plusYears(1);
         this.stato_tessera = stato_tessera;
+        this.utente = utente;
     }
 
     public UUID getId() {

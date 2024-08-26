@@ -36,8 +36,9 @@ public class Abbonamento {
     public Abbonamento() {
     }
 
-    public Abbonamento(Periodicita_abbonamento periodicita_abbonamento) {
+    public Abbonamento(Periodicita_abbonamento periodicita_abbonamento, Tessera tessera) {
         this.periodicita_abbonamento = periodicita_abbonamento;
+        this.tessera = tessera;
     }
 
     public UUID getId() {

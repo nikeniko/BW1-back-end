@@ -38,9 +38,18 @@ public class Biglietto {
     public Biglietto() {
     }
 
-    public Biglietto(LocalDate data_emissione, boolean stato_biglietto) {
+    public Biglietto(LocalDate data_emissione, boolean stato_biglietto, Tessera tessera, Rivenditori rivenditore) {
         this.data_emissione = data_emissione;
         this.stato_biglietto = stato_biglietto;
+        this.tessera = tessera;
+        this.rivenditore = rivenditore;
+    }
+
+    public Biglietto(LocalDate data_emissione, boolean stato_biglietto, Tessera tessera,  Distributori distributore) {
+        this.data_emissione = data_emissione;
+        this.stato_biglietto = stato_biglietto;
+        this.tessera = tessera;
+        this.distributore = distributore;
     }
 
 
