@@ -2,33 +2,26 @@ package UrbanTransit.DAO;
 
 import UrbanTransit.entities.Rivenditori;
 import jakarta.persistence.EntityManager;
-
-import java.util.UUID;
+import jakarta.persistence.EntityTransaction;
 
 public class RivenditoriDAO {
 
-    private final EntityManager em;
+    private EntityManager entityManager;
 
-    public RivenditoriDAO(EntityManager em) {
-        this.em = em;
+    public RivenditoriDAO(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
-
     public void createRivenditori(Rivenditori rivenditore) {
-        em.getTransaction().begin();
-        em.persist(rivenditore);
-        em.getTransaction().commit();
-    }
-
-    public Rivenditori findRivenditoreById(UUID id) {
-        return em.find(Rivenditori.class, id);
-    }
-
-    public void deleteRivenditori(UUID id) {
-        em.getTransaction().begin();
-        Rivenditori rivenditore = em.find(Rivenditori.class, id);
-        if (rivenditore != null) {
-            em.remove(rivenditore);
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            entityManager.persist(rivenditore);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
         }
-        em.getTransaction().commit();
     }
 }

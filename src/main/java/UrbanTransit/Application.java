@@ -1,21 +1,13 @@
 package UrbanTransit;
 
-import UrbanTransit.DAO.BigliettoDAO;
-import UrbanTransit.DAO.DistributoriDAO;
-import UrbanTransit.DAO.RivenditoriDAO;
+import UrbanTransit.DAO.*;
 import UrbanTransit.entities.*;
-import UrbanTransit.enums.Periodicita_abbonamento;
-import UrbanTransit.enums.Stato_Distribrutori;
+import UrbanTransit.enums.Tipo_mezzo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
 
 import static UrbanTransit.enums.Stato_Distribrutori.ATTIVO;
 
@@ -28,19 +20,41 @@ public class Application {
         RivenditoriDAO rivenditoriDAO = new RivenditoriDAO(em);
         DistributoriDAO distributoriDAO = new DistributoriDAO(em);
         BigliettoDAO bigliettoDAO = new BigliettoDAO(em);
+        TesseraDAO tesseraDAO = new TesseraDAO(em);
+        UtenteDAO utenteDAO = new UtenteDAO(em);
+        TimbratiDAO timbratiDAO = new TimbratiDAO(em);
+        MezziDAO mezziDAO = new MezziDAO(em);
 
-        Rivenditori nuovoRivenditore = new Rivenditori("via calzoni","tabbacchi" );
-        rivenditoriDAO.createRivenditori(nuovoRivenditore);
 
-        Distributori nuovoDistributore = new Distributori(ATTIVO,"via dalle scatole");
-        distributoriDAO.createDistributori(nuovoDistributore);
+        try {
 
-        Tessera tessera = new Tessera();
-        Biglietto nuovoBiglietto = new Biglietto(LocalDate.now(), tessera, nuovoRivenditore);
+            Utente nuovoUtente = new Utente("Nike","niko", LocalDate.of(1999,12,4));
+            utenteDAO.createUtente(nuovoUtente);
 
-        bigliettoDAO.createBiglietto(nuovoBiglietto);
+            Tessera nuovaTessera = new Tessera();
+            nuovaTessera.setUtente(nuovoUtente);
+            tesseraDAO.createTessera(nuovaTessera);
 
-        em.close();
-        emf.close();
+            Rivenditori nuovoRivenditore = new Rivenditori("via calzoni", "tabacchi");
+            rivenditoriDAO.createRivenditori(nuovoRivenditore);
+
+            Distributori nuovoDistributore = new Distributori(ATTIVO, "via dalle scatole");
+            distributoriDAO.createDistributori(nuovoDistributore);
+
+            Biglietto nuovoBiglietto = new Biglietto(LocalDate.now(), nuovaTessera, nuovoDistributore);
+            bigliettoDAO.createBiglietto(nuovoBiglietto);
+
+            Mezzi nuovoMezzo = new Mezzi(34, Tipo_mezzo.AUTOBUS, 5);
+            mezziDAO.createMezzi(nuovoMezzo);
+
+            Timbrati nuovoTimbrato = new Timbrati(LocalDate.now(), nuovoMezzo,nuovoBiglietto);
+            timbratiDAO.createTimbrati(nuovoTimbrato);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+            emf.close();
+        }
     }
 }

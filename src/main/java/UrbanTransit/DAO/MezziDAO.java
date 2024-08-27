@@ -1,21 +1,21 @@
 package UrbanTransit.DAO;
 
-import UrbanTransit.entities.Distributori;
+import UrbanTransit.entities.Mezzi;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
-public class DistributoriDAO {
+public class MezziDAO {
 
     private EntityManager entityManager;
 
-    public DistributoriDAO(EntityManager entityManager) {
+    public MezziDAO(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
-    public void createDistributori(Distributori distributore) {
+    public void createMezzi(Mezzi mezzo) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            entityManager.persist(distributore);
+            entityManager.persist(mezzo);
             transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {
