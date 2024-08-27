@@ -4,6 +4,7 @@ package UrbanTransit.entities;
 import UrbanTransit.enums.Periodicita_abbonamento;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -21,45 +22,47 @@ public class Abbonamento {
     @Enumerated (EnumType.STRING)
     private Periodicita_abbonamento periodicita_abbonamento;
 
+    @Column
+    private LocalDate data_inizio;
+
     @ManyToOne
     private Rivenditori rivenditore;
 
     @ManyToOne
-    private Tessera tessera;
-
-    @ManyToOne
     private Distributori distributore;
 
-    @ManyToMany(mappedBy = "abbonamenti")
-    private List<Mezzi> mezzi = new ArrayList<>();
+    @ManyToOne
+    private Tessera tessera;
+
+
+
 
     public Abbonamento() {
     }
 
-    public Abbonamento(Periodicita_abbonamento periodicita_abbonamento, Tessera tessera) {
+    public Abbonamento(Periodicita_abbonamento periodicita_abbonamento, LocalDate data_inizio, Rivenditori rivenditore, Tessera tessera) {
         this.periodicita_abbonamento = periodicita_abbonamento;
+        this.data_inizio = data_inizio;
+        this.rivenditore = rivenditore;
         this.tessera = tessera;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public Periodicita_abbonamento getPeriodicita_abbonamento() {
-        return periodicita_abbonamento;
-    }
-
-    public void setPeriodicita_abbonamento(Periodicita_abbonamento periodicita_abbonamento) {
+    public Abbonamento(Periodicita_abbonamento periodicita_abbonamento, LocalDate data_inizio, Distributori distributore, Tessera tessera) {
         this.periodicita_abbonamento = periodicita_abbonamento;
+        this.data_inizio = data_inizio;
+        this.distributore = distributore;
+        this.tessera = tessera;
     }
-
 
     @Override
     public String toString() {
         return "Abbonamento{" +
                 "id=" + id +
                 ", periodicita_abbonamento=" + periodicita_abbonamento +
-
+                ", data_inizio=" + data_inizio +
+                ", rivenditore=" + rivenditore +
+                ", distributore=" + distributore +
+                ", tessera=" + tessera +
                 '}';
     }
 }

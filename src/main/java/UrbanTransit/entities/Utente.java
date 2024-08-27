@@ -68,7 +68,13 @@ public class Utente {
         this.data_nascita = data_nascita;
     }
 
+   public Tessera getTessera() {
+       return tessera;
+   }
 
+   public void setTessera(Tessera tessera) {
+       this.tessera = tessera;
+   }
 
     @Override
     public String toString() {
@@ -77,7 +83,7 @@ public class Utente {
                 ", nome='" + nome + '\'' +
                 ", cognome='" + cognome + '\'' +
                 ", data_nascita=" + data_nascita +
-
+               ", tessera=" + tessera +
                 '}';
     }
 }

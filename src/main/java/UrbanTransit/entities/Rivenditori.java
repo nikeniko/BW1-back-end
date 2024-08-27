@@ -20,6 +20,8 @@ public class Rivenditori {
     @Column
     private String denominazione;
 
+
+
     public Rivenditori() {
     }
 

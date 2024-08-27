@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table (name = "tratta")
+@Table(name = "tratta")
 
 public class Tratta {
 
@@ -23,27 +23,23 @@ public class Tratta {
     @Column
     private int tempo_percorrenza;
 
-    @Column
-    private int num_giri;
+    @OneToOne(mappedBy = "tratta")
+    private Percorrenza percorrenza;
 
-    @Column
-    private int tempo_effettivo;
 
     public Tratta() {
     }
 
-    public Tratta(String zona_partenza, String capolinea, int tempo_percorrenza, int num_giri, int tempo_effettivo) {
+    public Tratta(String zona_partenza, String capolinea, int tempo_percorrenza, Percorrenza percorrenza) {
         this.zona_partenza = zona_partenza;
         this.capolinea = capolinea;
         this.tempo_percorrenza = tempo_percorrenza;
-        this.num_giri = num_giri;
-        this.tempo_effettivo = tempo_effettivo;
+        this.percorrenza = percorrenza;
     }
 
     public UUID getId() {
         return id;
     }
-
 
     public String getZona_partenza() {
         return zona_partenza;
@@ -69,20 +65,12 @@ public class Tratta {
         this.tempo_percorrenza = tempo_percorrenza;
     }
 
-    public int getNum_giri() {
-        return num_giri;
+    public Percorrenza getPercorrenza() {
+        return percorrenza;
     }
 
-    public void setNum_giri(int num_giri) {
-        this.num_giri = num_giri;
-    }
-
-    public int getTempo_effettivo() {
-        return tempo_effettivo;
-    }
-
-    public void setTempo_effettivo(int tempo_effettivo) {
-        this.tempo_effettivo = tempo_effettivo;
+    public void setPercorrenza(Percorrenza percorrenza) {
+        this.percorrenza = percorrenza;
     }
 
     @Override
@@ -92,8 +80,7 @@ public class Tratta {
                 ", zona_partenza='" + zona_partenza + '\'' +
                 ", capolinea='" + capolinea + '\'' +
                 ", tempo_percorrenza=" + tempo_percorrenza +
-                ", num_giri=" + num_giri +
-                ", tempo_effettivo=" + tempo_effettivo +
+                // ", percorrenza=" + percorrenza +
                 '}';
     }
 }
