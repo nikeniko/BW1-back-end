@@ -30,11 +30,10 @@ public class Tratta {
     public Tratta() {
     }
 
-    public Tratta(String zona_partenza, String capolinea, int tempo_percorrenza, Percorrenza percorrenza) {
+    public Tratta(String zona_partenza, String capolinea, int tempo_percorrenza) {
         this.zona_partenza = zona_partenza;
         this.capolinea = capolinea;
         this.tempo_percorrenza = tempo_percorrenza;
-        this.percorrenza = percorrenza;
     }
 
     public UUID getId() {

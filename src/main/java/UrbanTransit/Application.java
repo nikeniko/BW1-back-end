@@ -2,6 +2,7 @@ package UrbanTransit;
 
 import UrbanTransit.DAO.*;
 import UrbanTransit.entities.*;
+import UrbanTransit.enums.Stato_mezzo;
 import UrbanTransit.enums.Tipo_mezzo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -24,6 +25,9 @@ public class Application {
         UtenteDAO utenteDAO = new UtenteDAO(em);
         TimbratiDAO timbratiDAO = new TimbratiDAO(em);
         MezziDAO mezziDAO = new MezziDAO(em);
+        StatoDAO statoDAO = new StatoDAO(em);
+        PercorrenzaDAO percorrenzaDAO = new PercorrenzaDAO(em);
+        TrattaDAO trattaDAO = new TrattaDAO(em);
 
 
         try {
@@ -31,8 +35,9 @@ public class Application {
             Utente nuovoUtente = new Utente("Nike","niko", LocalDate.of(1999,12,4));
             utenteDAO.createUtente(nuovoUtente);
 
-            Tessera nuovaTessera = new Tessera();
-            nuovaTessera.setUtente(nuovoUtente);
+            LocalDate data_inizio = LocalDate.now();
+            LocalDate data_scadenza = data_inizio.plusYears(1);
+            Tessera nuovaTessera = new Tessera(data_inizio,data_scadenza,true,nuovoUtente);
             tesseraDAO.createTessera(nuovaTessera);
 
             Rivenditori nuovoRivenditore = new Rivenditori("via calzoni", "tabacchi");
@@ -49,6 +54,15 @@ public class Application {
 
             Timbrati nuovoTimbrato = new Timbrati(LocalDate.now(), nuovoMezzo,nuovoBiglietto);
             timbratiDAO.createTimbrati(nuovoTimbrato);
+
+            Stato nuovoStato = new Stato(Stato_mezzo.SERVIZIO,LocalDate.of(2024,8,14),LocalDate.now(),nuovoMezzo);
+            statoDAO.createStato(nuovoStato);
+
+            Tratta nuovoTratta = new Tratta("via dalle scatole", "via costanzo", 36);
+            trattaDAO.createTratta(nuovoTratta);
+
+            Percorrenza  nuovoPercorrenza = new Percorrenza(37 ,nuovoStato , nuovoTratta);
+            percorrenzaDAO.createPercorrenza(nuovoPercorrenza);
 
         } catch (Exception e) {
             e.printStackTrace();

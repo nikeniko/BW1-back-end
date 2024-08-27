@@ -26,9 +26,10 @@ public class Percorrenza {
     public Percorrenza() {
     }
 
-    public Percorrenza(int tempo_effettivo, Stato stato ) {
+    public Percorrenza(int tempo_effettivo, Stato stato, Tratta tratta ) {
         this.tempo_effettivo = tempo_effettivo;
         this.stato = stato;
+        this.tratta = tratta;
     }
 
     public UUID getId() {
@@ -44,6 +45,14 @@ public class Percorrenza {
         this.tempo_effettivo = tempo_effettivo;
     }
 
+    public Tratta getTratta() {
+        return tratta;
+    }
+
+    public void setTratta(Tratta tratta) {
+        this.tratta = tratta;
+    }
+
     public Stato getStato() {
         return stato;
     }
@@ -56,9 +65,10 @@ public class Percorrenza {
     @Override
     public String toString() {
         return "Percorrenza{" +
-                "id=" + id +
+                "stato=" + stato +
                 ", tempo_effettivo=" + tempo_effettivo +
-                ", stato=" + stato +
+                ", id=" + id +
+                ", tratta=" + tratta +
                 '}';
     }
 }
