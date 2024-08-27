@@ -31,6 +31,20 @@ public class BigliettoDAO {
         return entityManager.find(Biglietto.class, id);
     }
 
+    public void updateBiglietto(Biglietto biglietto) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            entityManager.merge(biglietto);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
+    }
+
     public void deleteBiglietto(UUID id) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
