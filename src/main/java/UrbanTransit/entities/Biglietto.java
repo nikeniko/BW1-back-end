@@ -36,14 +36,12 @@ public class Biglietto {
 
     public Biglietto(LocalDate data_emissione,  Tessera tessera, Rivenditori rivenditore) {
         this.data_emissione = data_emissione;
-
         this.tessera = tessera;
         this.rivenditore = rivenditore;
     }
 
     public Biglietto(LocalDate data_emissione,  Tessera tessera, Distributori distributore) {
         this.data_emissione = data_emissione;
-
         this.tessera = tessera;
         this.distributore = distributore;
     }
