@@ -19,9 +19,6 @@ public class Biglietto {
     @Column
     private LocalDate data_emissione;
 
-    @Column
-    private boolean stato_biglietto;
-
     @ManyToOne
     private Tessera tessera;
 
@@ -31,16 +28,24 @@ public class Biglietto {
     @ManyToOne
     private Distributori distributore;
 
-    @ManyToOne
-    private Mezzi mezzo;
-
+    @OneToOne(mappedBy = "biglietto")
+    private Timbrati timbrati;
 
     public Biglietto() {
     }
 
-    public Biglietto(LocalDate data_emissione, boolean stato_biglietto) {
+    public Biglietto(LocalDate data_emissione,  Tessera tessera, Rivenditori rivenditore) {
         this.data_emissione = data_emissione;
-        this.stato_biglietto = stato_biglietto;
+
+        this.tessera = tessera;
+        this.rivenditore = rivenditore;
+    }
+
+    public Biglietto(LocalDate data_emissione,  Tessera tessera, Distributori distributore) {
+        this.data_emissione = data_emissione;
+
+        this.tessera = tessera;
+        this.distributore = distributore;
     }
 
 
@@ -50,14 +55,6 @@ public class Biglietto {
 
     public void setData_emissione(LocalDate data_emissione) {
         this.data_emissione = data_emissione;
-    }
-
-    public boolean isStato_biglietto() {
-        return stato_biglietto;
-    }
-
-    public void setStato_biglietto(boolean stato_biglietto) {
-        this.stato_biglietto = stato_biglietto;
     }
 
     public UUID getId() {
@@ -70,8 +67,10 @@ public class Biglietto {
         return "Biglietto{" +
                 "id=" + id +
                 ", data_emissione=" + data_emissione +
-                ", stato_biglietto=" + stato_biglietto +
-
+                ", tessera=" + tessera +
+                ", rivenditore=" + rivenditore +
+                ", distributore=" + distributore +
+                ", timbrati=" + timbrati +
                 '}';
     }
 }

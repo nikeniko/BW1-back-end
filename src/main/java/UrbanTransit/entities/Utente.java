@@ -22,6 +22,9 @@ public class Utente {
     @Column
     private LocalDate data_nascita;
 
+    @OneToOne(mappedBy = "utente", cascade = CascadeType.ALL)
+    private Tessera tessera;
+
 
 
     // getter e setter e costruttore
@@ -65,7 +68,13 @@ public class Utente {
         this.data_nascita = data_nascita;
     }
 
+   public Tessera getTessera() {
+       return tessera;
+   }
 
+   public void setTessera(Tessera tessera) {
+       this.tessera = tessera;
+   }
 
     @Override
     public String toString() {
@@ -74,7 +83,7 @@ public class Utente {
                 ", nome='" + nome + '\'' +
                 ", cognome='" + cognome + '\'' +
                 ", data_nascita=" + data_nascita +
-
+               ", tessera=" + tessera +
                 '}';
     }
 }
