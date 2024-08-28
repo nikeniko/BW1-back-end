@@ -847,7 +847,6 @@ public class Application {
         nuovaTessera.setData_inizio(dataInizio);
         nuovaTessera.setData_scadenza(dataInizio.plusYears(1));
         nuovaTessera.setStato_tessera(true);
-
         tesseraDAO.salvaTessera(nuovaTessera);
         System.out.println("Tessera creata con successo! ID: " + nuovaTessera.getId());
 
