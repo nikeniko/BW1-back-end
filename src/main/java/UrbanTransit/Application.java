@@ -13,7 +13,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
-
 public class Application {
     public static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("BW-UrbanTransit");
 
@@ -837,7 +836,7 @@ public class Application {
         }
     }
 
-    private static Tessera creaNuovaTessera(Scanner scanner,DateTimeFormatter formatter, TesseraDAO tesseraDAO, UtenteDAO utenteDAO) {
+    private static Tessera creaNuovaTessera(Scanner scanner, DateTimeFormatter formatter, TesseraDAO tesseraDAO, UtenteDAO utenteDAO) {
         System.out.println("Inserire il proprio ID utente: ");
         String idUtente = scanner.nextLine();
         Utente utenteTrovato = utenteDAO.trovaUtentePerId(UUID.fromString(idUtente));
@@ -858,22 +857,17 @@ public class Application {
         } else {
             System.out.println("Creazione nuova tessera:");
 
-            Tessera nuovaTessera = new Tessera();
-            nuovaTessera.setData_inizio(Today);
-            nuovaTessera.setData_scadenza(Today.plusYears(1));
-            nuovaTessera.setStato_tessera(true);
-            tesseraDAO.salvaTessera(nuovaTessera);
+            Tessera nuovaTessera = new Tessera(Today,Today.plusYears(1),true,utenteTrovato);
             utenteTrovato.setTessera(nuovaTessera);
             utenteDAO.aggiornaUtente(utenteTrovato);
-            System.out.println("Tessera creata con successo! ID: " + nuovaTessera.getId());
             System.out.println("Tessera associata con successo all'utente: " + utenteTrovato.getNome() + " " + utenteTrovato.getCognome() + "\ncon ID: " + utenteTrovato.getId());
+            System.out.println("tessera ID " + utenteTrovato.getTessera().getId() + "\n\n");
 
             return nuovaTessera;
         }
 
 
-
-
     }
+
 
 }
