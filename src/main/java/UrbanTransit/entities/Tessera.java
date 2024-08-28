@@ -37,32 +37,33 @@ public class Tessera {
     public Tessera() {
     }
 
-    public Tessera(LocalDate data_inizio, LocalDate data_scadenza, boolean stato_tessera, Utente utente) {
+    public Tessera(LocalDate data_inizio, boolean stato_tessera, Utente utente) {
         this.data_inizio = data_inizio;
-        this.data_scadenza = data_scadenza;
+        this.data_scadenza = data_inizio.plusYears(1);
         this.stato_tessera = stato_tessera;
         this.utente = utente;
     }
 
-    public Tessera(LocalDate data_inizio, LocalDate data_scadenza, Utente utente, boolean stato_tessera, List<Abbonamento> abbonamenti) {
+    public Tessera(LocalDate data_inizio,  Utente utente, boolean stato_tessera, List<Abbonamento> abbonamenti) {
         this.data_inizio = data_inizio;
-        this.data_scadenza = data_scadenza;
+        this.data_scadenza = data_inizio.plusYears(1);
         this.utente = utente;
         this.stato_tessera = stato_tessera;
         this.abbonamenti = abbonamenti;
     }
 
-    public Tessera(LocalDate data_inizio, LocalDate data_scadenza, boolean stato_tessera, Utente utente, List<Biglietto> biglietti) {
+    public Tessera(LocalDate data_inizio,  boolean stato_tessera, Utente utente, List<Biglietto> biglietti) {
         this.data_inizio = data_inizio;
-        this.data_scadenza = data_scadenza;
+        this.data_scadenza = data_inizio.plusYears(1);
         this.stato_tessera = stato_tessera;
         this.utente = utente;
         this.biglietti = biglietti;
     }
 
-    public Tessera(LocalDate data_inizio, LocalDate data_scadenza, boolean stato_tessera, Utente utente, List<Abbonamento> abbonamenti, List<Biglietto> biglietti) {
+    public Tessera(LocalDate data_inizio,  boolean stato_tessera, Utente utente, List<Abbonamento> abbonamenti, List<Biglietto> biglietti) {
         this.data_inizio = data_inizio;
-        this.data_scadenza = data_scadenza;
+        this.data_scadenza = data_inizio.plusYears(1);
+
         this.stato_tessera = stato_tessera;
         this.utente = utente;
         this.abbonamenti = abbonamenti;
