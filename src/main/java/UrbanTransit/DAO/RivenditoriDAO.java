@@ -1,73 +1,75 @@
 package UrbanTransit.DAO;
 
+import UrbanTransit.entities.Abbonamento;
+import UrbanTransit.entities.Biglietto;
 import UrbanTransit.entities.Rivenditori;
-import UrbanTransit.entities.Tessera;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 public class RivenditoriDAO {
+    private EntityManager em;
 
-    private EntityManager entityManager;
-
-    public RivenditoriDAO(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public RivenditoriDAO(EntityManager em) {
+        this.em = em;
     }
 
-    public void createRivenditori(Rivenditori rivenditore) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
-            entityManager.persist(rivenditore);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        }
+    // Metodo per salvare un nuovo rivenditore
+    public void salvaRivenditore(Rivenditori rivenditore) {
+        em.getTransaction().begin();
+        em.persist(rivenditore);
+        em.getTransaction().commit();
     }
 
-    public Rivenditori getRivenditoreById(UUID id) {
-        return entityManager.find(Rivenditori.class, id);
+    // Metodo per trovare tutti i rivenditori
+    public List<Rivenditori> trovaTuttiRivenditori() {
+        TypedQuery<Rivenditori> query = em.createQuery("SELECT r FROM Rivenditori r", Rivenditori.class);
+        return query.getResultList();
     }
 
-    public void updateRivenditori(UUID id, String nuovoDenominazione, String nuovoIndirizzo) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
-            Rivenditori rivenditori = entityManager.find(Rivenditori.class, id);
-            if (rivenditori != null) {
-                rivenditori.setDenominazione(nuovoDenominazione);
-                rivenditori.setIndirizzo(nuovoIndirizzo);
-                entityManager.merge(rivenditori);
-            }
-
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        }
+    // Metodo per trovare un rivenditore per ID
+    public Rivenditori trovaRivenditorePerId(UUID id) {
+        return em.find(Rivenditori.class, id);
     }
 
-    public void deleteRivenditori(UUID id) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
-            Rivenditori rivenditore = entityManager.find(Rivenditori.class, id);
-            if (rivenditore != null) {
-                entityManager.remove(rivenditore);
-            }
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        }
+    // Metodo per aggiornare un rivenditore esistente
+    public void aggiornaRivenditore(Rivenditori rivenditore) {
+        em.getTransaction().begin();
+        em.merge(rivenditore);
+        em.getTransaction().commit();
+    }
+
+    // Metodo per eliminare un rivenditore
+    public void eliminaRivenditore(Rivenditori rivenditore) {
+        em.getTransaction().begin();
+        em.remove(em.contains(rivenditore) ? rivenditore : em.merge(rivenditore));
+        em.getTransaction().commit();
+    }
+
+    // Metodo per trovare abbonamenti emessi da un rivenditore in un determinato intervallo di tempo
+    public List<Abbonamento> trovaAbbonamentiEmessi(UUID rivenditoreId, LocalDate dataInizio, LocalDate dataFine) {
+        TypedQuery<Abbonamento> query = em.createQuery(
+                "SELECT a FROM Abbonamento a WHERE a.rivenditore.id = :rivenditoreId AND a.data_inizio BETWEEN :dataInizio AND :dataFine",
+                Abbonamento.class
+        );
+        query.setParameter("rivenditoreId", rivenditoreId);
+        query.setParameter("dataInizio", dataInizio);
+        query.setParameter("dataFine", dataFine);
+        return query.getResultList();
+    }
+
+
+    public List<Biglietto> trovaBigliettiEmessi(UUID rivenditoreId, LocalDate dataInizio, LocalDate dataFine) {
+        TypedQuery<Biglietto> query = em.createQuery(
+                "SELECT b FROM Biglietto b WHERE b.rivenditore.id = :rivenditoreId AND b.data_emissione BETWEEN :dataInizio AND :dataFine",
+                Biglietto.class
+        );
+        query.setParameter("rivenditoreId", rivenditoreId);
+        query.setParameter("dataInizio", dataInizio);
+        query.setParameter("dataFine", dataFine);
+        return query.getResultList();
     }
 }
