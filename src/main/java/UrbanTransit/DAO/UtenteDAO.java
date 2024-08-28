@@ -2,76 +2,44 @@ package UrbanTransit.DAO;
 
 import UrbanTransit.entities.Utente;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
 
-import java.time.LocalDate;
-import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class UtenteDAO {
+    private EntityManager em;
 
-    private EntityManager entityManager;
-
-    public UtenteDAO(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public UtenteDAO(EntityManager em){
+        this.em = em;
     }
 
-    public void createUtente(Utente utente) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
-            entityManager.persist(utente);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        }
+    public void salvaUtente(Utente utente){
+        em.getTransaction().begin();
+        em.persist(utente);
+        em.getTransaction().commit();
     }
 
-    public Utente getUtenteById(UUID id) {
-        return entityManager.find(Utente.class, id);
+    public Utente trovaUtentePerId(UUID id){
+        return em.find(Utente.class, id);
     }
 
-    public void updateUtente(UUID id, String nuovoNome, String nuovoCognome, LocalDate nuovoData_nascita) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
-            Utente utente = entityManager.find(Utente.class, id);
-            if (utente != null) {
-                utente.setNome(nuovoNome);
-                utente.setCognome(nuovoCognome);
-                utente.setData_nascita(nuovoData_nascita);
-                entityManager.merge(utente);
-            }
-
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        }
+    public List<Utente> trovaTuttiGliUtenti(){
+        TypedQuery<Utente> query = em.createQuery("SELECT u FROM Utente u", Utente.class);
+        return query.getResultList();
     }
 
-
-    public void deleteUtente(UUID id) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
-            Utente utente = entityManager.find(Utente.class, id);
-            if (utente != null) {
-                entityManager.remove(utente);
-            }
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        }
+    public void aggiornaUtente(Utente utente){
+        em.getTransaction().begin();
+        em.merge(utente);
+        em.getTransaction().commit();
     }
 
+    public void eliminaUtente(Utente utente){
+        em.getTransaction().begin();
+        em.remove(em.contains(utente) ? utente : em.merge(utente));
+        em.getTransaction().commit();
+
+
+    }
 }
-
