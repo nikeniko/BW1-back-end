@@ -796,8 +796,15 @@ import java.util.*;
           }
 
           System.out.println("Inserisci periodicità dell'abbonamento (SETTIMANALE/MENSILE):");
-          String periodicita = scanner.nextLine();
-          Periodicita_abbonamento periodicitaAbbonamento = Periodicita_abbonamento.valueOf(periodicita.toUpperCase());
+          String periodicita = scanner.nextLine().trim().toUpperCase();
+
+          Periodicita_abbonamento periodicitaAbbonamento = null;
+          try {
+              periodicitaAbbonamento = Periodicita_abbonamento.valueOf(periodicita);
+          } catch (IllegalArgumentException e){
+              System.out.println("Periodicità non valida. Valori accettati: SETTIMANALE, MENSILE.");
+              return;
+          }
 
           System.out.println("Inserisci data di inizio (dd/MM/yyyy):");
           LocalDate dataInizio = LocalDate.parse(scanner.nextLine(), formatter);
@@ -815,6 +822,7 @@ import java.util.*;
 
               if (distributore != null) {
                   Abbonamento nuovoAbbonamento = new Abbonamento(periodicitaAbbonamento, dataInizio, distributore, tessera);
+                  nuovoAbbonamento.setRivenditore(null);
                   abbonamentoDAO.salvaAbbonamento(nuovoAbbonamento);
                   System.out.println("Abbonamento emesso da distributore aggiunto con successo! ID: " + nuovoAbbonamento.getId());
               } else {
@@ -827,6 +835,7 @@ import java.util.*;
 
               if (rivenditore != null) {
                   Abbonamento nuovoAbbonamento = new Abbonamento(periodicitaAbbonamento, dataInizio, rivenditore, tessera);
+                  nuovoAbbonamento.setDistributore(null);
                   abbonamentoDAO.salvaAbbonamento(nuovoAbbonamento);
                   System.out.println("Abbonamento emesso da rivenditore aggiunto con successo! ID: " + nuovoAbbonamento.getId());
               } else {
