@@ -42,14 +42,41 @@ public class Application {
             * lista completa di tutti gli utenti
             * */
 
+            // amministratore pass = 1234
+
+            /*
+            * 1- utente
+            * 2- amministratore
+            * */
+
+
+            /*
+            * 1- registra utente
+            * 2- associa tessera
+            * 3- compra biglietto o abbonamento
+            * 4- elimina utente
+            * */
+
+            /*
+            * 1- gestione utenti --> 1- trova utente
+            *                        2- lista utenti tot
+            *                        3- modifica o elimina utenti
+            * 2- gestione tessere -> etc...
+            * 3- gestione distributori o rivenditori
+            *   - visualizza, crea, aggiorna,  elimina...
+            *
+            * 4- gestione mezzi...
+            * 5- gestione tratte...
+            * */
+
             System.out.println("\nCome possiamo aiutarla?\n\n" +
                     "1- Salvare nuovo utente" +
                     "\n2- Cercare un utente tramite ID" +
                     "\n3- Aggiornare dati di un utente" +
                     "\n4- Eliminare un utente" +
                     "\n5- Visualizzare la lista degli utenti registrati" +
-                    "\n6- Voglio associare una tessera" +
-                    "\n7- Acquistare un nuovo biglietto o abbonamento" +
+                    "\n6- Voglio associare una nuova tessera" +
+                    "\n7- Acquistare un biglietto o abbonamento" +
                     "\n- " +
                     "\n- ");
 
@@ -108,7 +135,9 @@ public class Application {
                 case 5:
                     System.out.println("ecco la lista di tutti gli utenti: ");
                     List <Utente> utentiTrovati = ud.trovaTuttiGliUtenti();
-                    utentiTrovati.stream().forEach(System.out::println);
+                    for (Utente utenteCorrente : utentiTrovati) {
+                        System.out.println(utenteCorrente);
+                    }
                     break;
                 case 6:
                     System.out.println("Inserire ID utente per associare la tessera: ");
@@ -207,6 +236,7 @@ public class Application {
                             break;
                         case 2:
                             // inserimento di abbonamento
+
                             break;
                         default:
                             break;
