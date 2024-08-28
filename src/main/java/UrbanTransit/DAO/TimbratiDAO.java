@@ -1,9 +1,11 @@
 package UrbanTransit.DAO;
 
 import UrbanTransit.entities.Timbrati;
+import UrbanTransit.entities.Tratta;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 public class TimbratiDAO {
@@ -14,11 +16,16 @@ public class TimbratiDAO {
         this.entityManager = entityManager;
     }
 
-    public void createTimbrati(Timbrati timbrati) {
+    public void updateTimbrati(UUID id, LocalDate nuovoData_timbro) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            entityManager.persist(timbrati);
+            Timbrati timbrati = entityManager.find(Timbrati.class, id);
+            if (timbrati != null) {
+                timbrati.setData_timbro(nuovoData_timbro);
+                entityManager.merge(timbrati);
+            }
+
             transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {

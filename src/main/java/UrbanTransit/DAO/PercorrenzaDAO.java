@@ -1,9 +1,11 @@
 package UrbanTransit.DAO;
 
 import UrbanTransit.entities.Percorrenza;
+import UrbanTransit.entities.Tessera;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 public class PercorrenzaDAO {
@@ -32,11 +34,16 @@ public class PercorrenzaDAO {
         return entityManager.find(Percorrenza.class, id);
     }
 
-    public void updatePercorrenza(Percorrenza percorrenza) {
+    public void updatePercorrenza(UUID id, int nuovoTempo_effettivo) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            entityManager.merge(percorrenza);
+            Percorrenza percorrenza = entityManager.find(Percorrenza.class, id);
+            if (percorrenza != null) {
+                percorrenza.setTempo_effettivo(nuovoTempo_effettivo);
+                entityManager.merge(percorrenza);
+            }
+
             transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {

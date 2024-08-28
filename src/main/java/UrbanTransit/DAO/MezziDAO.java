@@ -1,9 +1,12 @@
 package UrbanTransit.DAO;
 
 import UrbanTransit.entities.Mezzi;
+import UrbanTransit.entities.Stato;
+import UrbanTransit.enums.Stato_mezzo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 public class MezziDAO {
@@ -32,11 +35,18 @@ public class MezziDAO {
         return entityManager.find(Mezzi.class, id);
     }
 
-    public void updateMezzi(Mezzi mezzo) {
+
+    public void updateMezzi(UUID id, int nuovoNum_giri, int nuovoCapienza) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            entityManager.merge(mezzo);
+            Mezzi mezzi = entityManager.find(Mezzi.class, id);
+            if (mezzi != null) {
+                mezzi.setNum_giri(nuovoNum_giri);
+                mezzi.setCapienza(nuovoCapienza);
+                entityManager.merge(mezzi);
+            }
+
             transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {

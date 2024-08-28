@@ -1,9 +1,11 @@
 package UrbanTransit.DAO;
 
 import UrbanTransit.entities.Tessera;
+import UrbanTransit.entities.Tratta;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 public class TesseraDAO {
@@ -32,11 +34,18 @@ public class TesseraDAO {
         return entityManager.find(Tessera.class, id);
     }
 
-    public void updateTessera(Tessera tessera) {
+    public void updateTessera(UUID id, Boolean nuovoStato_tessera, LocalDate nuovoData_inizio, LocalDate nuovoData_scadenza) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            entityManager.merge(tessera);
+            Tessera tessera = entityManager.find(Tessera.class, id);
+            if (tessera != null) {
+                tessera.setStato_tessera(nuovoStato_tessera);
+                tessera.setData_inizio(nuovoData_inizio);
+                tessera.setData_scadenza(nuovoData_scadenza);
+                entityManager.merge(tessera);
+            }
+
             transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {
