@@ -1,6 +1,7 @@
 package UrbanTransit.DAO;
 
 import UrbanTransit.entities.Abbonamento;
+import UrbanTransit.entities.Biglietto;
 import UrbanTransit.entities.Rivenditori;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -53,6 +54,18 @@ public class RivenditoriDAO {
         TypedQuery<Abbonamento> query = em.createQuery(
                 "SELECT a FROM Abbonamento a WHERE a.rivenditore.id = :rivenditoreId AND a.data_inizio BETWEEN :dataInizio AND :dataFine",
                 Abbonamento.class
+        );
+        query.setParameter("rivenditoreId", rivenditoreId);
+        query.setParameter("dataInizio", dataInizio);
+        query.setParameter("dataFine", dataFine);
+        return query.getResultList();
+    }
+
+
+    public List<Biglietto> trovaBigliettiEmessi(UUID rivenditoreId, LocalDate dataInizio, LocalDate dataFine) {
+        TypedQuery<Biglietto> query = em.createQuery(
+                "SELECT b FROM Biglietto b WHERE b.rivenditore.id = :rivenditoreId AND b.data_emissione BETWEEN :dataInizio AND :dataFine",
+                Biglietto.class
         );
         query.setParameter("rivenditoreId", rivenditoreId);
         query.setParameter("dataInizio", dataInizio);

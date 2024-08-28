@@ -15,7 +15,7 @@ public class TesseraDAO {
     }
 
     // Metodo per salvare una nuova tessera
-    public void creaNuovaTessera(Tessera tessera) {
+    public void salvaTessera(Tessera tessera) {
         em.getTransaction().begin();
         em.persist(tessera);
         em.getTransaction().commit();

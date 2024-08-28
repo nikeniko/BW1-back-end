@@ -16,7 +16,7 @@ public class AbbonamentoDAO {
     }
 
     //Ottieni un nuovo abbonamento
-    public void nuovoAbbonamento(Abbonamento abbonamento){
+    public void salvaAbbonamento(Abbonamento abbonamento){
         em.getTransaction().begin();
         em.persist(abbonamento);
         em.getTransaction().commit();
@@ -63,5 +63,6 @@ public class AbbonamentoDAO {
         query.setParameter("dataFine", dataFine);
         return query.getResultList();
     }
+
 
 }
