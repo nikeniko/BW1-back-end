@@ -1,63 +1,75 @@
 package UrbanTransit.DAO;
 
-import UrbanTransit.entities.Abbonamento;
 import UrbanTransit.entities.Distributori;
+import UrbanTransit.entities.Stato;
+import UrbanTransit.enums.Stato_Distribrutori;
+import UrbanTransit.enums.Stato_mezzo;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.EntityTransaction;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 public class DistributoriDAO {
-    private EntityManager em;
 
-    public DistributoriDAO(EntityManager em) {
-        this.em = em;
+    private EntityManager entityManager;
+
+    public DistributoriDAO(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
-    // Metodo per salvare un nuovo distributore
-    public void salvaDistributore(Distributori distributore) {
-        em.getTransaction().begin();
-        em.persist(distributore);
-        em.getTransaction().commit();
+    public void createDistributori(Distributori distributore) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            entityManager.persist(distributore);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
     }
 
-    // Metodo per trovare un distributore per ID
-    public Distributori trovaDistributorePerId(UUID id) {
-        return em.find(Distributori.class, id);
+    public Distributori getDistributoreById(UUID id) {
+        return entityManager.find(Distributori.class, id);
     }
 
 
-    // Metodo per trovare tutti i distributori
-    public List<Distributori> trovaTuttiDistributori() {
-        TypedQuery<Distributori> query = em.createQuery("SELECT d FROM Distributori d", Distributori.class);
-        return query.getResultList();
-    }
+    public void updateDistributori(UUID id, String nuovoIndirizzo, String nuovoStato_distribrutori, LocalDate nuovoData_fine) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            Distributori distributori = entityManager.find(Distributori.class, id);
+            if (distributori != null) {
+                distributori.setIndirizzo(nuovoIndirizzo);
+                distributori.setStato_distribrutori(Stato_Distribrutori.valueOf(nuovoStato_distribrutori));
+                entityManager.merge(distributori);
+            }
 
-    // Metodo per aggiornare un distributore esistente
-    public void aggiornaDistributore(Distributori distributore) {
-        em.getTransaction().begin();
-        em.merge(distributore);
-        em.getTransaction().commit();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
     }
-
-    // Metodo per eliminare un distributore
-    public void eliminaDistributore(Distributori distributore) {
-        em.getTransaction().begin();
-        em.remove(em.contains(distributore) ? distributore : em.merge(distributore));
-        em.getTransaction().commit();
-    }
-
-    // Metodo per trovare abbonamenti emessi da un distributore in un determinato intervallo di tempo
-    public List<Abbonamento> trovaAbbonamentiEmessi(UUID distributoreId, LocalDate dataInizio, LocalDate dataFine) {
-        TypedQuery<Abbonamento> query = em.createQuery(
-                "SELECT a FROM Abbonamento a WHERE a.distributore.id = :distributoreId AND a.data_inizio BETWEEN :dataInizio AND :dataFine",
-                Abbonamento.class
-        );
-        query.setParameter("distributoreId", distributoreId);
-        query.setParameter("dataInizio", dataInizio);
-        query.setParameter("dataFine", dataFine);
-        return query.getResultList();
+    public void deleteDistributori(UUID id) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            Distributori distributore = entityManager.find(Distributori.class, id);
+            if (distributore != null) {
+                entityManager.remove(distributore);
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
     }
 }

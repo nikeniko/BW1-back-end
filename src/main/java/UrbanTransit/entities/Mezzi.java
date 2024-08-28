@@ -35,11 +35,10 @@ public class Mezzi {
     public Mezzi() {
     }
 
-    public Mezzi(int capienza, Tipo_mezzo tipo_mezzo, int num_giri, Timbrati timbrati) {
+    public Mezzi(int capienza, Tipo_mezzo tipo_mezzo, int num_giri) {
         this.capienza = capienza;
         this.tipo_mezzo = tipo_mezzo;
         this.num_giri = num_giri;
-        this.timbrati = timbrati;
     }
 
     public Tipo_mezzo getTipo_mezzo() {
