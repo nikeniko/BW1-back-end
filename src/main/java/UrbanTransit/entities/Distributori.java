@@ -1,7 +1,7 @@
 package UrbanTransit.entities;
 
 
-import UrbanTransit.enums.Stato_Distribrutori;
+import UrbanTransit.enums.Stato_Distributori;
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -17,7 +17,7 @@ public class Distributori {
 
     @Column
     @Enumerated (EnumType.STRING)
-    private Stato_Distribrutori stato_distribrutori;
+    private Stato_Distributori stato_distributori;
 
     @Column
     private String indirizzo;
@@ -25,8 +25,8 @@ public class Distributori {
     public Distributori() {
     }
 
-    public Distributori(Stato_Distribrutori stato_distribrutori, String indirizzo) {
-        this.stato_distribrutori = stato_distribrutori;
+    public Distributori(Stato_Distributori stato_distributori, String indirizzo) {
+        this.stato_distributori = stato_distributori;
         this.indirizzo = indirizzo;
     }
 
@@ -35,12 +35,12 @@ public class Distributori {
         return id;
     }
 
-    public Stato_Distribrutori getStato_distribrutori() {
-        return stato_distribrutori;
+    public Stato_Distributori getStato_distribrutori() {
+        return stato_distributori;
     }
 
-    public void setStato_distribrutori(Stato_Distribrutori stato_distribrutori) {
-        this.stato_distribrutori = stato_distribrutori;
+    public void setStato_distribrutori(Stato_Distributori stato_distributori) {
+        this.stato_distributori = stato_distributori;
     }
 
     public String getIndirizzo() {
@@ -56,7 +56,7 @@ public class Distributori {
     public String toString() {
         return "Distributori{" +
                 "id=" + id +
-                ", stato_distribrutori=" + stato_distribrutori +
+                ", stato_distribrutori=" + stato_distributori +
                 ", indirizzo='" + indirizzo + '\'' +
                 '}';
     }

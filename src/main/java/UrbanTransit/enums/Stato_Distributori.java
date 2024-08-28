@@ -1,6 +1,6 @@
 package UrbanTransit.enums;
 
-public enum Stato_Distribrutori {
+public enum Stato_Distributori {
     ATTIVO,
     FUORI_SERVIZIO
 }

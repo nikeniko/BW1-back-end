@@ -1,17 +1,12 @@
 package UrbanTransit;
 
-import UrbanTransit.DAO.AbbonamentoDAO;
-import UrbanTransit.DAO.DistributoriDAO;
-import UrbanTransit.DAO.RivenditoriDAO;
-import UrbanTransit.DAO.UtenteDAO;
+import UrbanTransit.DAO.*;
 import UrbanTransit.entities.*;
 import UrbanTransit.enums.Periodicita_abbonamento;
-import UrbanTransit.enums.Stato_Distribrutori;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -19,285 +14,328 @@ import java.util.*;
 
 
   public class Application {
-    public static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("BW-UrbanTransit");
+      public static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("BW-UrbanTransit");
 
-    public static void main(String[] args) {
+      public static void main(String[] args) {
 
-        EntityManager em = emf.createEntityManager();
+          EntityManager em = emf.createEntityManager();
 
-        UtenteDAO utenteDAO = new UtenteDAO(em);
-        DistributoriDAO distributoriDAO = new DistributoriDAO(em);
-        RivenditoriDAO rivenditoriDAO = new RivenditoriDAO(em);
-        AbbonamentoDAO abbonamentoDAO = new AbbonamentoDAO(em);
+          UtenteDAO utenteDAO = new UtenteDAO(em);
+          DistributoriDAO distributoriDAO = new DistributoriDAO(em);
+          RivenditoriDAO rivenditoriDAO = new RivenditoriDAO(em);
+          AbbonamentoDAO abbonamentoDAO = new AbbonamentoDAO(em);
+          TesseraDAO tesseraDAO = new TesseraDAO(em);
 
-        Scanner scanner = new Scanner(System.in);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+          Scanner scanner = new Scanner(System.in);
+          DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        while (true) {
-            System.out.println("Cosa vuoi fare oggi?");
-            System.out.println("1. Gestisci Utenti");
-            System.out.println("2. Gestisci Abbonamenti");
-            System.out.println("3. Gestisci Distributori/Rivenditori");
-            System.out.println("4. Esci");
-            int scelta = scanner.nextInt();
-            scanner.nextLine();
+          while (true) {
+              System.out.println("Cosa vuoi fare oggi?");
+              System.out.println("1. Gestisci Utenti");
+              System.out.println("2. Gestisci Abbonamenti");
+              System.out.println("3. Gestisci Distributori/Rivenditori");
+              System.out.println("4. Gestisci Tessere");
+              System.out.println("5. Esci");
+              int scelta = scanner.nextInt();
+              scanner.nextLine();
 
-            switch (scelta) {
-                case 1:
-                    gestisciUtenti(scanner, formatter, utenteDAO);
-                    break;
-                case 2:
-                    gestisciAbbonamenti(scanner, formatter, abbonamentoDAO, distributoriDAO, rivenditoriDAO);
-                    break;
-                case 3:
-                    gestisciDistributoriERivenditori(scanner, distributoriDAO, rivenditoriDAO);
-                    break;
-                case 4:
-                    em.close();
-                    emf.close();
-                    System.out.println("Applicazione terminata.");
-                    return;
-                default:
-                    System.out.println("Scelta non valida. Riprova.");
-            }
-        }
-    }
+              switch (scelta) {
+                  case 1:
+                      gestisciUtenti(scanner, formatter, utenteDAO);
+                      break;
+                  case 2:
+                      gestisciAbbonamenti(scanner, formatter, abbonamentoDAO, distributoriDAO, rivenditoriDAO, tesseraDAO, utenteDAO);
+                      break;
+                  case 3:
+                      gestisciDistributoriERivenditori(scanner, distributoriDAO, rivenditoriDAO);
+                      break;
+                  case 4:
+                      gestisciTessere(scanner, formatter, tesseraDAO, utenteDAO);
+                      break;
+                  case 5:
+                      em.close();
+                      emf.close();
+                      System.out.println("Applicazione terminata.");
+                      return;
+                  default:
+                      System.out.println("Scelta non valida. Riprova.");
+              }
+          }
+      }
 
-    private static void gestisciUtenti(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO) {
-        while (true) {
+      private static void gestisciUtenti(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO) {
+          while (true) {
 
-            // Menu di selezione utenti
-            System.out.println("Seleziona un'opzione:");
-            System.out.println("1. Registra Utente");
-            System.out.println("2. Trova Utente per ID");
-            System.out.println("3. Trova Tutti gli Utenti");
-            System.out.println("4. Aggiorna Utente");
-            System.out.println("5. Elimina Utente");
-            System.out.println("6. Esci");
-            int scelta = scanner.nextInt();
-            scanner.nextLine();
+              // Menu di selezione utenti
+              System.out.println("Seleziona un'opzione:");
+              System.out.println("1. Registra Utente");
+              System.out.println("2. Trova Utente per ID");
+              System.out.println("3. Trova Tutti gli Utenti");
+              System.out.println("4. Aggiorna Utente");
+              System.out.println("5. Elimina Utente");
+              System.out.println("6. Esci");
+              int scelta = scanner.nextInt();
+              scanner.nextLine();
 
-            switch (scelta) {
-                case 1:
-                    //registrazione utente
-                    System.out.println("Inserisci nome:");
-                    String nome = scanner.nextLine();
-                    System.out.println("Inserisci cognome:");
-                    String cognome = scanner.nextLine();
-                    System.out.println("Inserisci data di nascita:");
-                    String dataNascitaStr = scanner.nextLine();
-                    LocalDate dataNascita = LocalDate.parse(dataNascitaStr, formatter);
+              switch (scelta) {
+                  case 1:
+                      //registrazione utente
+                      System.out.println("Inserisci nome:");
+                      String nome = scanner.nextLine();
+                      System.out.println("Inserisci cognome:");
+                      String cognome = scanner.nextLine();
+                      System.out.println("Inserisci data di nascita:");
+                      String dataNascitaStr = scanner.nextLine();
+                      LocalDate dataNascita = LocalDate.parse(dataNascitaStr, formatter);
 
-                    Utente nuovoUtente = new Utente();
-                    nuovoUtente.setNome(nome);
-                    nuovoUtente.setCognome(cognome);
-                    nuovoUtente.setData_nascita(dataNascita);
+                      Utente nuovoUtente = new Utente();
+                      nuovoUtente.setNome(nome);
+                      nuovoUtente.setCognome(cognome);
+                      nuovoUtente.setData_nascita(dataNascita);
 
-                    utenteDAO.salvaUtente(nuovoUtente);
-                    System.out.println("Utente registrato con successo!");
-                    System.out.println("ID Utente: " + nuovoUtente.getId());
-                    break;
-                case 2:
-                    //Trova utente per id
-                    System.out.println("Inserisci ID utente (UUID):");
-                    String id = scanner.nextLine();
-                    try {
-                        UUID uuid = UUID.fromString(id);
-                        Utente utente = utenteDAO.trovaUtentePerId(uuid);
+                      utenteDAO.salvaUtente(nuovoUtente);
+                      System.out.println("Utente registrato con successo!");
+                      System.out.println("ID Utente: " + nuovoUtente.getId());
+                      break;
+                  case 2:
+                      //Trova utente per id
+                      System.out.println("Inserisci ID utente (UUID):");
+                      String id = scanner.nextLine();
+                      try {
+                          UUID uuid = UUID.fromString(id);
+                          Utente utente = utenteDAO.trovaUtentePerId(uuid);
 
-                        if (utente != null) {
-                            System.out.println("Dettagli utente:");
-                            System.out.println("Nome: " + utente.getNome());
-                            System.out.println("Cognome: " + utente.getCognome());
-                            System.out.println("Data di nascita: " + utente.getData_nascita());
-                        } else {
-                            System.out.println("Utente non trovato.");
-                        }
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Formato UUID non valido");
-                    }
-                    break;
-                case 3:
-                    //Lista utenti nel db
-                    List<Utente> utenti = utenteDAO.trovaTuttiGliUtenti();
-                    System.out.println("Lista di tutti gli utenti:");
-                    for (Utente u : utenti) {
-                        System.out.println("ID: " + u.getId() + ", Nome: " + u.getNome() + ", Cognome: " + u.getCognome() + ", Data di nascita: " + u.getData_nascita());
-                    }
-                    break;
-                case 4:
-                    //Aggiorna utente
-                    System.out.println("Inserisci id dell'utente da aggiornare:");
-                    String idAggiornaStr = scanner.nextLine();
-                    try {
-                        UUID idAggiorna = UUID.fromString(idAggiornaStr);
-                        Utente utenteAggiorna = utenteDAO.trovaUtentePerId(idAggiorna);
+                          if (utente != null) {
+                              System.out.println("Dettagli utente:");
+                              System.out.println("Nome: " + utente.getNome());
+                              System.out.println("Cognome: " + utente.getCognome());
+                              System.out.println("Data di nascita: " + utente.getData_nascita());
+                          } else {
+                              System.out.println("Utente non trovato.");
+                          }
+                      } catch (IllegalArgumentException e) {
+                          System.out.println("Formato UUID non valido");
+                      }
+                      break;
+                  case 3:
+                      //Lista utenti nel db
+                      List<Utente> utenti = utenteDAO.trovaTuttiGliUtenti();
+                      System.out.println("Lista di tutti gli utenti:");
+                      for (Utente u : utenti) {
+                          System.out.println("ID: " + u.getId() + ", Nome: " + u.getNome() + ", Cognome: " + u.getCognome() + ", Data di nascita: " + u.getData_nascita());
+                      }
+                      break;
+                  case 4:
+                      //Aggiorna utente
+                      System.out.println("Inserisci id dell'utente da aggiornare:");
+                      String idAggiornaStr = scanner.nextLine();
+                      try {
+                          UUID idAggiorna = UUID.fromString(idAggiornaStr);
+                          Utente utenteAggiorna = utenteDAO.trovaUtentePerId(idAggiorna);
 
-                        if (utenteAggiorna != null) {
-                            System.out.println("Inserisci nuovo nome (attuale: " + utenteAggiorna.getNome() + "):");
-                            String nuovoNome = scanner.nextLine();
-                            utenteAggiorna.setNome(nuovoNome);
+                          if (utenteAggiorna != null) {
+                              System.out.println("Inserisci nuovo nome (attuale: " + utenteAggiorna.getNome() + "):");
+                              String nuovoNome = scanner.nextLine();
+                              utenteAggiorna.setNome(nuovoNome);
 
-                            System.out.println("Inserisci nuovo cognome (attuale: " + utenteAggiorna.getCognome() + "):");
-                            String nuovoCognome = scanner.nextLine();
-                            utenteAggiorna.setCognome(nuovoCognome);
+                              System.out.println("Inserisci nuovo cognome (attuale: " + utenteAggiorna.getCognome() + "):");
+                              String nuovoCognome = scanner.nextLine();
+                              utenteAggiorna.setCognome(nuovoCognome);
 
-                            System.out.println("Inserisci nuova data di nascita (dd/MM/yyyy) (attuale: " + utenteAggiorna.getData_nascita().format(formatter) + "):");
-                            String nuovaDataNascitaStr = scanner.nextLine();
-                            LocalDate nuovaDataNascita = LocalDate.parse(nuovaDataNascitaStr, formatter);
-                            utenteAggiorna.setData_nascita(nuovaDataNascita);
+                              System.out.println("Inserisci nuova data di nascita (dd/MM/yyyy) (attuale: " + utenteAggiorna.getData_nascita().format(formatter) + "):");
+                              String nuovaDataNascitaStr = scanner.nextLine();
+                              LocalDate nuovaDataNascita = LocalDate.parse(nuovaDataNascitaStr, formatter);
+                              utenteAggiorna.setData_nascita(nuovaDataNascita);
 
-                            utenteDAO.aggiornaUtente(utenteAggiorna);
-                            System.out.println("Utente aggiornato con successo!");
-                        } else {
-                            System.out.println("Utente non trovato.");
-                        }
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Formato UUID non valido.");
-                    }
-                    break;
-                case 5:
-                    //Elimina utente
-                    System.out.println("Inserisci id dell'utente da eliminare:");
-                    String idEliminaStr = scanner.nextLine();
-                    try {
-                        UUID idElimina = UUID.fromString(idEliminaStr);
-                        Utente utenteElimina = utenteDAO.trovaUtentePerId(idElimina);
+                              utenteDAO.aggiornaUtente(utenteAggiorna);
+                              System.out.println("Utente aggiornato con successo!");
+                          } else {
+                              System.out.println("Utente non trovato.");
+                          }
+                      } catch (IllegalArgumentException e) {
+                          System.out.println("Formato UUID non valido.");
+                      }
+                      break;
+                  case 5:
+                      //Elimina utente
+                      System.out.println("Inserisci id dell'utente da eliminare:");
+                      String idEliminaStr = scanner.nextLine();
+                      try {
+                          UUID idElimina = UUID.fromString(idEliminaStr);
+                          Utente utenteElimina = utenteDAO.trovaUtentePerId(idElimina);
 
-                        if (utenteElimina != null) {
-                            utenteDAO.eliminaUtente(utenteElimina);
-                            System.out.println("Utente eliminato con successo!");
-                        } else {
-                            System.out.println("Utente non trovato.");
-                        }
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Formato UUID non valido");
-                    }
-                    break;
-                case 6:
-                    //Esci
-                    return;
-                default:
-                    System.out.println("Scelta non valida. Riprova.");
-            }
-        }
-    }
+                          if (utenteElimina != null) {
+                              utenteDAO.eliminaUtente(utenteElimina);
+                              System.out.println("Utente eliminato con successo!");
+                          } else {
+                              System.out.println("Utente non trovato.");
+                          }
+                      } catch (IllegalArgumentException e) {
+                          System.out.println("Formato UUID non valido");
+                      }
+                      break;
+                  case 6:
+                      //Esci
+                      return;
+                  default:
+                      System.out.println("Scelta non valida. Riprova.");
+              }
+          }
+      }
 
 
-     private static void gestisciAbbonamenti(Scanner scanner, DateTimeFormatter formatter, AbbonamentoDAO abbonamentoDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO) {
-        while (true) {
-            System.out.println("Menu Abbonamenti:");
-            System.out.println("1. Crea Nuovo Abbonamento");
-            System.out.println("2. Aggiorna Abbonamento");
-            System.out.println("3. Elimina Abbonamento");
-            System.out.println("4. Torna al menu principale");
-            int scelta = scanner.nextInt();
-            scanner.nextLine();
+      private static void gestisciAbbonamenti(Scanner scanner, DateTimeFormatter formatter, AbbonamentoDAO abbonamentoDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, TesseraDAO tesseraDAO, UtenteDAO utenteDAO) {
+          while (true) {
+              System.out.println("Menu Abbonamenti:");
+              System.out.println("1. Crea Nuovo Abbonamento");
+              System.out.println("2. Aggiorna Abbonamento");
+              System.out.println("3. Elimina Abbonamento");
+              System.out.println("4. Torna al menu principale");
+              int scelta = scanner.nextInt();
+              scanner.nextLine();
 
-             switch (scelta){
-                case 1:
-                    System.out.println("Vuoi emettere l'abbonamento da un distributore o un rivenditore?");
-                    System.out.println("1. Distributore");
-                    System.out.println("2. Rivenditore");
-                    int sceltaEmittente = scanner.nextInt();
-                    scanner.nextLine();
+              switch (scelta) {
+                  case 1:
+                      Tessera tessera;
+                      System.out.println("Sei in possesso di una tessera? (si/no)");
+                      String haTessera = scanner.nextLine().trim().toLowerCase();
+                      if (haTessera.equals("si")) {
+                          System.out.println("Inserisci l'ID della tessera:");
+                          String tesseraIdStr = scanner.nextLine();
+                          UUID tesseraId = UUID.fromString(tesseraIdStr);
+                          tessera = tesseraDAO.trovaTesseraPerId(tesseraId);
+                          if (tessera == null) {
+                              System.out.println("Tessera non trovata. Creane una nuova.");
+                              tessera = creaNuovaTessera(scanner, formatter, tesseraDAO, utenteDAO);
+                          }
+                      } else {
+                          tessera = creaNuovaTessera(scanner, formatter, tesseraDAO, utenteDAO);
+                      }
 
-                    System.out.println("Inserisci periodicità dell'abbonamento (SETTIMANALE/MENSILE):");
-                    String periodicita = scanner.nextLine();
-                    Periodicita_abbonamento periodicitaAbbonamento = Periodicita_abbonamento.valueOf(periodicita.toUpperCase());
+                      System.out.println("Vuoi emettere l'abbonamento da un distributore o un rivenditore?");
+                      System.out.println("1. Distributore");
+                      System.out.println("2. Rivenditore");
+                      int sceltaEmittente = scanner.nextInt();
+                      scanner.nextLine();
 
-                    System.out.println("Inserisci data di inizio (dd/MM/yyyy):");
-                    LocalDate dataInizio = LocalDate.parse(scanner.nextLine(), formatter);
+                      System.out.println("Inserisci periodicità dell'abbonamento (SETTIMANALE/MENSILE):");
+                      String periodicita = scanner.nextLine();
+                      Periodicita_abbonamento periodicitaAbbonamento = Periodicita_abbonamento.valueOf(periodicita.toUpperCase());
 
-                    // Creazione di una tessera test
-                    Tessera tessera = new Tessera();
-                    tessera.setData_inizio(dataInizio);
-                    tessera.setData_scadenza(dataInizio.plusYears(1));
-                    tessera.setStato_tessera(true);
+                      System.out.println("Inserisci data di inizio (dd/MM/yyyy):");
+                      LocalDate dataInizio = LocalDate.parse(scanner.nextLine(), formatter);
 
-                    if (sceltaEmittente == 1) {
-                        System.out.println("Inserisci ID del distributore:");
-                        String distributoreId = scanner.nextLine();
-                        Distributori distributore = distributoriDAO.trovaDistributorePerId(UUID.fromString(distributoreId));
+                      if (sceltaEmittente == 1) {
+                          System.out.println("Inserisci ID del distributore:");
+                          String distributoreId = scanner.nextLine();
+                          Distributori distributore = distributoriDAO.trovaDistributorePerId(UUID.fromString(distributoreId));
 
-                       if (distributore != null) {
-                            Abbonamento nuovoAbbonamento = new Abbonamento(periodicitaAbbonamento, dataInizio, distributore, tessera);
-                            abbonamentoDAO.nuovoAbbonamento(nuovoAbbonamento);
-                            System.out.println("Abbonamento emesso da distributore aggiunto con successo! ID: " + nuovoAbbonamento.getId());
-                        } else {
-                            System.out.println("Distributore non trovato.");
-                        }
+                          if (distributore != null) {
+                              Abbonamento nuovoAbbonamento = new Abbonamento(periodicitaAbbonamento, dataInizio, distributore, tessera);
+                              abbonamentoDAO.nuovoAbbonamento(nuovoAbbonamento);
+                              System.out.println("Abbonamento emesso da distributore aggiunto con successo! ID: " + nuovoAbbonamento.getId());
+                          } else {
+                              System.out.println("Distributore non trovato.");
+                          }
 
-                    } else if (sceltaEmittente == 2) {
-                        System.out.println("Inserisci ID del rivenditore:");
-                        String rivenditoreId = scanner.nextLine();
-                        Rivenditori rivenditore = rivenditoriDAO.trovaRivenditorePerId(UUID.fromString(rivenditoreId));
+                      } else if (sceltaEmittente == 2) {
+                          System.out.println("Inserisci ID del rivenditore:");
+                          String rivenditoreId = scanner.nextLine();
+                          Rivenditori rivenditore = rivenditoriDAO.trovaRivenditorePerId(UUID.fromString(rivenditoreId));
 
-                        if (rivenditore != null) {
-                            Abbonamento nuovoAbbonamento = new Abbonamento(periodicitaAbbonamento, dataInizio, rivenditore, tessera);
-                            abbonamentoDAO.nuovoAbbonamento(nuovoAbbonamento);
-                            System.out.println("Abbonamento emesso da rivenditore aggiunto con successo! ID: " + nuovoAbbonamento.getId());
-                        } else {
-                            System.out.println("Rivenditore non trovato.");
-                        }
-                    } else {
-                        System.out.println("Scelta non valida.");
-                    }
-                    break;
+                          if (rivenditore != null) {
+                              Abbonamento nuovoAbbonamento = new Abbonamento(periodicitaAbbonamento, dataInizio, rivenditore, tessera);
+                              abbonamentoDAO.nuovoAbbonamento(nuovoAbbonamento);
+                              System.out.println("Abbonamento emesso da rivenditore aggiunto con successo! ID: " + nuovoAbbonamento.getId());
+                          } else {
+                              System.out.println("Rivenditore non trovato.");
+                          }
+                      } else {
+                          System.out.println("Scelta non valida.");
+                      }
+                      break;
 
-                case 2:
-                    System.out.println("Inserisci ID dell'abbonamento da aggiornare:");
-                    String idAggiornaAbbonamentoStr = scanner.nextLine();
-                    try {
-                        UUID idAggiornaAbbonamento = UUID.fromString(idAggiornaAbbonamentoStr);
-                        Abbonamento abbonamentoAggiorna = abbonamentoDAO.trovaAbbonamentoPerId(idAggiornaAbbonamento);
+                  case 2:
+                      System.out.println("Inserisci ID dell'abbonamento da aggiornare:");
+                      String idAggiornaAbbonamentoStr = scanner.nextLine();
+                      try {
+                          UUID idAggiornaAbbonamento = UUID.fromString(idAggiornaAbbonamentoStr);
+                          Abbonamento abbonamentoAggiorna = abbonamentoDAO.trovaAbbonamentoPerId(idAggiornaAbbonamento);
 
-                        if (abbonamentoAggiorna != null) {
-                            System.out.println("Inserisci nuova periodicità (attuale: " + abbonamentoAggiorna.getPeriodicita_abbonamento() + "):");
-                            String nuovaPeriodicita = scanner.nextLine();
-                            abbonamentoAggiorna.setPeriodicita_abbonamento(Periodicita_abbonamento.valueOf(nuovaPeriodicita.toUpperCase()));
+                          if (abbonamentoAggiorna != null) {
+                              System.out.println("Inserisci nuova periodicità (attuale: " + abbonamentoAggiorna.getPeriodicita_abbonamento() + "):");
+                              String nuovaPeriodicita = scanner.nextLine();
+                              abbonamentoAggiorna.setPeriodicita_abbonamento(Periodicita_abbonamento.valueOf(nuovaPeriodicita.toUpperCase()));
 
-                            System.out.println("Inserisci nuova data di inizio (dd/MM/yyyy) (attuale: " + abbonamentoAggiorna.getData_inizio().format(formatter) + "):");
-                            String nuovaDataInizioStr = scanner.nextLine();
-                            LocalDate nuovaDataInizio = LocalDate.parse(nuovaDataInizioStr, formatter);
-                            abbonamentoAggiorna.setData_inizio(nuovaDataInizio);
+                              System.out.println("Inserisci nuova data di inizio (dd/MM/yyyy) (attuale: " + abbonamentoAggiorna.getData_inizio().format(formatter) + "):");
+                              String nuovaDataInizioStr = scanner.nextLine();
+                              LocalDate nuovaDataInizio = LocalDate.parse(nuovaDataInizioStr, formatter);
+                              abbonamentoAggiorna.setData_inizio(nuovaDataInizio);
 
-                            abbonamentoDAO.aggiornaAbbonamento(abbonamentoAggiorna);
-                            System.out.println("Abbonamento aggiornato con successo!");
-                        } else {
-                            System.out.println("Abbonamento non trovato.");
-                        }
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Formato UUID non valido.");
-                    }
-                    break;
+                              abbonamentoDAO.aggiornaAbbonamento(abbonamentoAggiorna);
+                              System.out.println("Abbonamento aggiornato con successo!");
+                          } else {
+                              System.out.println("Abbonamento non trovato.");
+                          }
+                      } catch (IllegalArgumentException e) {
+                          System.out.println("Formato UUID non valido.");
+                      }
+                      break;
 
-                case 3:
-                    System.out.println("Inserisci ID dell'abbonamento da eliminare:");
-                    String idEliminaAbbonamentoStr = scanner.nextLine();
-                    try {
-                        UUID idEliminaAbbonamento = UUID.fromString(idEliminaAbbonamentoStr);
-                        Abbonamento abbonamentoElimina = abbonamentoDAO.trovaAbbonamentoPerId(idEliminaAbbonamento);
+                  case 3:
+                      System.out.println("Inserisci ID dell'abbonamento da eliminare:");
+                      String idEliminaAbbonamentoStr = scanner.nextLine();
+                      try {
+                          UUID idEliminaAbbonamento = UUID.fromString(idEliminaAbbonamentoStr);
+                          Abbonamento abbonamentoElimina = abbonamentoDAO.trovaAbbonamentoPerId(idEliminaAbbonamento);
 
-                        if (abbonamentoElimina != null) {
-                            abbonamentoDAO.eliminaAbbonamento(abbonamentoElimina);
-                            System.out.println("Abbonamento eliminato con successo!");
-                        } else {
-                            System.out.println("Abbonamento non trovato.");
-                        }
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Formato UUID non valido.");
-                    }
-                    break;
+                          if (abbonamentoElimina != null) {
+                              abbonamentoDAO.eliminaAbbonamento(abbonamentoElimina);
+                              System.out.println("Abbonamento eliminato con successo!");
+                          } else {
+                              System.out.println("Abbonamento non trovato.");
+                          }
+                      } catch (IllegalArgumentException e) {
+                          System.out.println("Formato UUID non valido.");
+                      }
+                      break;
 
-                case 4:
-                    return;
+                  case 4:
+                      return;
 
-                default:
-                    System.out.println("Scelta non valida. Riprova.");
-            }
-        }
-    }
+                  default:
+                      System.out.println("Scelta non valida. Riprova.");
+              }
+          }
+      }
+
+      private static Tessera creaNuovaTessera(Scanner scanner, DateTimeFormatter formatter, TesseraDAO tesseraDAO, UtenteDAO utenteDAO) {
+          System.out.println("Creazione nuova tessera:");
+
+          System.out.println("Inserisci l'ID dell'utente associato:");
+          String utenteIdStr = scanner.nextLine();
+          UUID utenteId = UUID.fromString(utenteIdStr);
+          Utente utente = utenteDAO.trovaUtentePerId(utenteId);
+
+          if (utente == null) {
+              System.out.println("Utente non trovato. Creazione tessera annullata.");
+              return null;
+          }
+
+          System.out.println("Inserisci data di inizio tessera (dd/MM/yyyy):");
+          LocalDate dataInizio = LocalDate.parse(scanner.nextLine(), formatter);
+
+          Tessera nuovaTessera = new Tessera();
+          nuovaTessera.setData_inizio(dataInizio);
+          nuovaTessera.setData_scadenza(dataInizio.plusYears(1));
+          nuovaTessera.setStato_tessera(true);
+          nuovaTessera.setUtente(utente);
+
+          tesseraDAO.creaNuovaTessera(nuovaTessera);
+          System.out.println("Tessera creata con successo! ID: " + nuovaTessera.getId());
+
+          return nuovaTessera;
+      }
 
       private static void gestisciDistributoriERivenditori(Scanner scanner, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO) {
           while (true) {
@@ -471,5 +509,82 @@ import java.util.*;
           }
       }
 
+      private static void gestisciTessere(Scanner scanner, DateTimeFormatter formatter, TesseraDAO tesseraDAO, UtenteDAO utenteDAO) {
+          while (true) {
+              System.out.println("Gestisci Tessere:");
+              System.out.println("1. Crea Nuova Tessera");
+              System.out.println("2. Aggiorna Tessera");
+              System.out.println("3. Elimina Tessera");
+              System.out.println("4. Visualizza tutte le Tessere");
+              System.out.println("5. Torna al menu principale");
+              int scelta = scanner.nextInt();
+              scanner.nextLine();
 
+              switch (scelta) {
+                  case 1:
+                      // Creazione di una nuova tessera
+                      Tessera nuovaTessera = creaNuovaTessera(scanner, formatter, tesseraDAO, utenteDAO);
+                      if (nuovaTessera != null) {
+                          System.out.println("Nuova tessera creata con successo! ID: " + nuovaTessera.getId());
+                      }
+                      break;
+                  case 2:
+                      // Aggiornamento di una tessera
+                      System.out.println("Inserisci l'ID della tessera da aggiornare:");
+                      String tesseraIdStr = scanner.nextLine();
+                      try {
+                          UUID tesseraId = UUID.fromString(tesseraIdStr);
+                          Tessera tesseraDaAggiornare = tesseraDAO.trovaTesseraPerId(tesseraId);
+
+                          if (tesseraDaAggiornare != null) {
+                              System.out.println("Inserisci nuova data di inizio tessera (dd/MM/yyyy) (attuale: " + tesseraDaAggiornare.getData_inizio().format(formatter) + "):");
+                              String nuovaDataInizioStr = scanner.nextLine();
+                              LocalDate nuovaDataInizio = LocalDate.parse(nuovaDataInizioStr, formatter);
+                              tesseraDaAggiornare.setData_inizio(nuovaDataInizio);
+                              tesseraDaAggiornare.setData_scadenza(nuovaDataInizio.plusYears(1));
+
+                              tesseraDAO.aggiornaTessera(tesseraDaAggiornare);
+                              System.out.println("Tessera aggiornata con successo!");
+                          } else {
+                              System.out.println("Tessera non trovata.");
                           }
+                      } catch (IllegalArgumentException e) {
+                          System.out.println("Formato UUID non valido.");
+                      }
+                      break;
+                  case 3:
+                      // Eliminazione di una tessera
+                      System.out.println("Inserisci l'ID della tessera da eliminare:");
+                      String tesseraIdEliminaStr = scanner.nextLine();
+                      try {
+                          UUID tesseraIdElimina = UUID.fromString(tesseraIdEliminaStr);
+                          Tessera tesseraDaEliminare = tesseraDAO.trovaTesseraPerId(tesseraIdElimina);
+
+                          if (tesseraDaEliminare != null) {
+                              tesseraDAO.eliminaTessera(tesseraDaEliminare);
+                              System.out.println("Tessera eliminata con successo!");
+                          } else {
+                              System.out.println("Tessera non trovata.");
+                          }
+                      } catch (IllegalArgumentException e) {
+                          System.out.println("Formato UUID non valido.");
+                      }
+                      break;
+                  case 4:
+                      // Visualizzazione di tutte le tessere
+                      List<Tessera> tessere = tesseraDAO.trovaTutteLeTessere();
+                      System.out.println("Elenco di tutte le tessere:");
+                      for (Tessera t : tessere) {
+                          System.out.println("ID: " + t.getId() + ", Data Inizio: " + t.getData_inizio() + ", Data Scadenza: " + t.getData_scadenza() + ", Stato: " + (t.isStato_tessera() ? "Attiva" : "Inattiva"));
+                      }
+                      break;
+                  case 5:
+                      return;
+                  default:
+                      System.out.println("Scelta non valida. Riprova.");
+              }
+          }
+      }
+  }
+
+
