@@ -1,12 +1,14 @@
 package UrbanTransit.DAO;
 
+import UrbanTransit.entities.Biglietto;
 import UrbanTransit.entities.Mezzi;
-import UrbanTransit.entities.Stato;
-import UrbanTransit.enums.Stato_mezzo;
+import UrbanTransit.enums.Tipo_mezzo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 public class MezziDAO {
@@ -36,7 +38,7 @@ public class MezziDAO {
     }
 
 
-    public void updateMezzi(UUID id, int nuovoNum_giri, int nuovoCapienza) {
+    public void updateInfoMezzi(UUID id, int nuovoNum_giri, int nuovoCapienza) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
@@ -71,5 +73,30 @@ public class MezziDAO {
             }
             e.printStackTrace();
         }
+    }
+
+    // Ottieni tutti i mezzi
+    public List<Mezzi> trovaTuttiMezzi() {
+        TypedQuery<Mezzi> query = entityManager.createQuery("SELECT m FROM Mezzi m", Mezzi.class);
+        return query.getResultList();
+    }
+
+    // Ottieni tutti i mezzi di un determinato tipo (AUTOBUS o TRAM)
+    public List<Mezzi> trovaMezziPerTipo(Tipo_mezzo tipo) {
+        TypedQuery<Mezzi> query = entityManager.createQuery("SELECT m FROM Mezzi m WHERE m.tipo_mezzo = :tipo", Mezzi.class);
+        query.setParameter("tipo", tipo);
+        return query.getResultList();
+    }
+
+    // Trova i biglietti vidimati su un mezzo in un determinato intervallo di tempo
+    public List<Biglietto> trovaBigliettiVidimati(UUID mezzoId, LocalDate dataInizio, LocalDate dataFine) {
+        TypedQuery<Biglietto> query = entityManager.createQuery(
+                "SELECT b FROM Biglietto b WHERE b.timbrati.mezzo.id = :mezzoId AND b.timbrati.data_timbro BETWEEN :dataInizio AND :dataFine",
+                Biglietto.class
+        );
+        query.setParameter("mezzoId", mezzoId);
+        query.setParameter("dataInizio", dataInizio);
+        query.setParameter("dataFine", dataFine);
+        return query.getResultList();
     }
 }
