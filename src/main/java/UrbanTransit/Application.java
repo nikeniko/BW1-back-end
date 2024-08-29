@@ -27,6 +27,8 @@ public class Application {
         AbbonamentoDAO abbonamentoDAO = new AbbonamentoDAO(em);
         BigliettoDAO bigliettoDAO = new BigliettoDAO(em);
         TesseraDAO tesseraDAO = new TesseraDAO(em);
+        MezziDAO mezziDAO = new MezziDAO(em);
+        TrattaDAO trattaDAO = new TrattaDAO(em);
 
         Scanner scanner = new Scanner(System.in);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
