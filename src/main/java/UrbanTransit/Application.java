@@ -29,7 +29,7 @@ public class Application {
         AbbonamentoDAO abbonamentoDAO = new AbbonamentoDAO(em);
         BigliettoDAO bigliettoDAO = new BigliettoDAO(em);
         TesseraDAO tesseraDAO = new TesseraDAO(em);
-        MezziDAO mezziDAO = new MezziDAO(em);
+        MezziDAO mezzoDAO = new MezziDAO(em);
         TrattaDAO trattaDAO = new TrattaDAO(em);
         PercorrenzaDAO percorrenzaDAO = new PercorrenzaDAO(em);
         StatoDAO statoDAO = new StatoDAO(em);
@@ -49,7 +49,7 @@ public class Application {
                     gestisciMenuUtente(scanner, formatter, utenteDAO, tesseraDAO, abbonamentoDAO, bigliettoDAO, distributoriDAO, rivenditoriDAO);
                     break;
                 case 2:
-                    gestisciMenuAmministratore(scanner, formatter, utenteDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, abbonamentoDAO, bigliettoDAO, mezziDAO, trattaDAO, percorrenzaDAO, statoDAO);
+                    gestisciMenuAmministratore(scanner, formatter, utenteDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, abbonamentoDAO, bigliettoDAO, mezzoDAO, trattaDAO, percorrenzaDAO, statoDAO);
                     break;
                 default:
                     System.out.println("Scelta non valida. Riprova.");
