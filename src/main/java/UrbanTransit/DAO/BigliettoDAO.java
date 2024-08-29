@@ -1,26 +1,29 @@
 package UrbanTransit.DAO;
 
+import UrbanTransit.entities.Abbonamento;
 import UrbanTransit.entities.Biglietto;
 import UrbanTransit.entities.Stato;
 import UrbanTransit.enums.Stato_mezzo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 public class BigliettoDAO {
 
-    private EntityManager entityManager;
+    private EntityManager em;
 
     public BigliettoDAO(EntityManager entityManager) {
-        this.entityManager = entityManager;
+        this.em = entityManager;
     }
     public void createBiglietto(Biglietto biglietto) {
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
-            entityManager.persist(biglietto);
+            em.persist(biglietto);
             transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {
@@ -31,18 +34,18 @@ public class BigliettoDAO {
     }
 
     public Biglietto getBigliettoById(UUID id) {
-        return entityManager.find(Biglietto.class, id);
+        return em.find(Biglietto.class, id);
     }
 
 
     public void updateBiglietto(UUID id, LocalDate nuovoData_emissione) {
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
-            Biglietto biglietto = entityManager.find(Biglietto.class, id);
+            Biglietto biglietto = em.find(Biglietto.class, id);
             if (biglietto != null) {
                 biglietto.setData_emissione(nuovoData_emissione);
-                entityManager.merge(biglietto);
+                em.merge(biglietto);
             }
 
             transaction.commit();
@@ -55,12 +58,12 @@ public class BigliettoDAO {
     }
 
     public void deleteBiglietto(UUID id) {
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
-            Biglietto biglietto = entityManager.find(Biglietto.class, id);
+            Biglietto biglietto = em.find(Biglietto.class, id);
             if (biglietto != null) {
-                entityManager.remove(biglietto);
+                em.remove(biglietto);
             }
             transaction.commit();
         } catch (Exception e) {
@@ -69,6 +72,28 @@ public class BigliettoDAO {
             }
             e.printStackTrace();
         }
+    }
+
+    //Metodo per trovare biglietti venduti da un distributore in un determinato intervallo di tempo
+    public List<Biglietto> trovaBigliettiDistributore(UUID distributoreId, LocalDate dataInizio, LocalDate dataFine){
+        TypedQuery<Biglietto> query = em.createQuery(
+                "SELECT a FROM Biglietto a WHERE a.distributore.id = :distributoreId AND a.data_inizio BETWEEN :dataInizio AND :dataFine", Biglietto.class);
+        query.setParameter("distributoreId", distributoreId);
+        query.setParameter("dataInizio", dataInizio);
+        query.setParameter("dataFine", dataFine);
+        return query.getResultList();
+    }
+
+    //Metodo per trovare biglietti venduti da un rivenditore in un determinato intervallo di tempo
+    public List<Biglietto> trovaBigliettiEmessiDaRivenditore(UUID rivenditoreId, LocalDate dataInizio, LocalDate dataFine) {
+        TypedQuery<Biglietto> query = em.createQuery(
+                "SELECT a FROM Biglietto a WHERE a.rivenditore.id = :rivenditoreId AND a.data_inizio BETWEEN :dataInizio AND :dataFine",
+                Biglietto.class
+        );
+        query.setParameter("rivenditoreId", rivenditoreId);
+        query.setParameter("dataInizio", dataInizio);
+        query.setParameter("dataFine", dataFine);
+        return query.getResultList();
     }
 
 }
