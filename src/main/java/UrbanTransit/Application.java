@@ -1092,7 +1092,7 @@ public class Application {
     }
 
     private static void calcolaTempoPercorrenzaEffettivoGiornaliero(MezziDAO mezziDAO) {
-        
+
     }
 
 
@@ -1148,17 +1148,6 @@ public class Application {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-    }
+}
 
 
