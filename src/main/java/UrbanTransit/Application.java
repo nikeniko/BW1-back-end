@@ -1117,6 +1117,43 @@ public class Application {
                     ", Tempo di Percorrenza Previsto: " + tratta.getTempo_percorrenza() + " minuti" + (tratta.getPercorrenza() !=null ? ", Tempo di Percorrenza Effettivo: " + tratta.getPercorrenza().getTempo_effettivo() + " minuti" : ""));
         }
     }
+    private static void gestisciTratte(Scanner scanner, TrattaDAO trattaDAO,PercorrenzaDAO percorrenzaDAO) {
+        while (true) {
+            try{
+                System.out.println("Gestione Tratte:");
+                System.out.println("1 - Aggiungi tratta");
+                System.out.println("2 - Modifica tratta");
+                System.out.println("3 - Elimina tratta");
+                System.out.println("4 - Lista tratte");
+                System.out.println("5 - Torna indietro");
+                int scelta = scanner.nextInt();
+                scanner.nextLine();
+
+                switch (scelta) {
+                    case 1:
+                        aggiungiTratta(scanner, trattaDAO);
+                        break;
+                    case 2:
+                        modificaTratta(scanner, trattaDAO);
+                        break;
+                    case 3:
+                        eliminaTratta(scanner, trattaDAO);
+                        break;
+                    case 4:
+                        listaTratte(trattaDAO, percorrenzaDAO);
+                        break;
+                    case 5:
+                        return;
+                    default:
+                        System.out.println("Scelta non valida. Riprova.");
+                }
+
+            } catch (InputMismatchException e) {
+                System.out.println("Errore: Inserisci un numero valido.");
+                scanner.nextLine();
+            }
+        }
+    }
 
 
     private static void aggiungiMezzo(MezziDAO mezziDAO, StatoDAO statoDAO, Scanner scanner, DateTimeFormatter formatter) {
