@@ -1119,7 +1119,6 @@ public class Application {
             System.out.println("Errore : " + e.getMessage());
         }
 
-
     }
 
     private static void mostraParcoMezzi(MezziDAO mezziDAO) {

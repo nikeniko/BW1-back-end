@@ -1,4 +1,4 @@
-package UrbanTransit.excepitons;
+package UrbanTransit.exceptions;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException(String id) {
