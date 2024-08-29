@@ -3,10 +3,12 @@ package UrbanTransit.DAO;
 import UrbanTransit.entities.Mezzi;
 import UrbanTransit.entities.Stato;
 import UrbanTransit.enums.Stato_mezzo;
+import UrbanTransit.enums.Tipo_mezzo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 public class MezziDAO {
@@ -72,4 +74,17 @@ public class MezziDAO {
             e.printStackTrace();
         }
     }
+
+    public List<Mezzi> getAllMezzi() {
+        return entityManager.createQuery("SELECT m FROM Mezzi m", Mezzi.class).getResultList();
+    }
+
+    public List<Mezzi> getMezziByTipo(Tipo_mezzo tipo) {
+        return entityManager.createQuery("SELECT m FROM Mezzi m WHERE m.tipo_mezzo = :tipo_mezzo", Mezzi.class)
+                .setParameter("tipo_mezzo", tipo)
+                .getResultList();
+    }
+
+
+
 }

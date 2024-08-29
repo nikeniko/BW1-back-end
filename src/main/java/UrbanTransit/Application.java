@@ -4,6 +4,8 @@ import UrbanTransit.DAO.*;
 import UrbanTransit.entities.*;
 import UrbanTransit.enums.Periodicita_abbonamento;
 import UrbanTransit.enums.Stato_Distributori;
+import UrbanTransit.enums.Stato_mezzo;
+import UrbanTransit.enums.Tipo_mezzo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -25,6 +27,8 @@ public class Application {
         RivenditoriDAO rivenditoriDAO = new RivenditoriDAO(em);
         AbbonamentoDAO abbonamentoDAO = new AbbonamentoDAO(em);
         TesseraDAO tesseraDAO = new TesseraDAO(em);
+        MezziDAO mezzoDAO = new MezziDAO(em);
+        StatoDAO statoDAO = new StatoDAO(em);
 
         Scanner scanner = new Scanner(System.in);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -41,7 +45,7 @@ public class Application {
                     gestisciMenuUtente(scanner, formatter, utenteDAO, tesseraDAO, abbonamentoDAO, distributoriDAO, rivenditoriDAO);
                     break;
                 case 2:
-                    gestisciMenuAmministratore(scanner, formatter, utenteDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, abbonamentoDAO);
+                    gestisciMenuAmministratore(scanner, formatter, utenteDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, abbonamentoDAO, mezzoDAO, statoDAO);
                     break;
                 default:
                     System.out.println("Scelta non valida. Riprova.");
@@ -86,7 +90,7 @@ public class Application {
         }
     }
 
-    private static void gestisciMenuAmministratore(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, AbbonamentoDAO abbonamentoDAO) {
+    private static void gestisciMenuAmministratore(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, AbbonamentoDAO abbonamentoDAO, MezziDAO mezzoDAO, StatoDAO statoDAO) {
         System.out.println("Inserisci la password amministratore:");
         String password = scanner.nextLine();
 
@@ -117,6 +121,8 @@ public class Application {
                     gestisciDistributoriERivenditori(scanner, distributoriDAO, rivenditoriDAO, abbonamentoDAO);
                     break;
                 case 4:
+                    gestisciMezzi(scanner, formatter, mezzoDAO, statoDAO);
+                    break;
                 case 5:
                     System.out.println("Funzione non ancora disponibile.");
                     break;
@@ -216,6 +222,7 @@ public class Application {
         }
     }
 
+
     private static void gestisciDistributori(Scanner scanner, DistributoriDAO distributoriDAO, AbbonamentoDAO abbonamentoDAO) {
         while (true) {
             System.out.println("Gestione Distributori:");
@@ -297,6 +304,102 @@ public class Application {
                     ottieniAbbonamentiEmessiDaRivenditore(scanner, abbonamentoDAO);
                     break;
                 case 8:
+                    return;
+                default:
+                    System.out.println("Scelta non valida. Riprova.");
+            }
+        }
+    }
+
+    private static void gestisciMezzi(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezzoDAO, StatoDAO statoDAO) {
+        while (true) {
+            System.out.println("Gestione Mezzi:");
+            System.out.println("1 - Gestione autobus");
+            System.out.println("2 - Gestione Tram");
+            System.out.println("3 - Parco mezzi");
+            System.out.println("4 - Aggiungi mezzo");
+            System.out.println("5 - Torna al menu precedente");
+            int scelta = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (scelta) {
+                case 1:
+                    gestisciAutobus(scanner, formatter, mezzoDAO);
+                    break;
+                case 2:
+                    gestisciTram(scanner, formatter, mezzoDAO);
+                    break;
+                case 3:
+                    mostraParcoMezzi(mezzoDAO);
+                    break;
+                case 4:
+                    aggiungiMezzo(mezzoDAO, statoDAO, scanner, formatter);
+                    break;
+                case 5:
+                    return;
+                default:
+                    System.out.println("Scelta non valida. Riprova.");
+            }
+        }
+    }
+
+    private static void gestisciAutobus(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezziDAO) {
+        while (true) {
+            System.out.println("Gestione Autobus:");
+            System.out.println("1 - Lista autobus");
+            System.out.println("2 - Trova autobus per id");
+            System.out.println("3 - Verifica stato autobus (attivo/in manutenzione)");
+            System.out.println("4 - Biglietti vidimati");
+            System.out.println("5 - Torna indietro");
+            int scelta = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (scelta) {
+                case 1:
+                    mostraListaMezzi(mezziDAO, Tipo_mezzo.AUTOBUS);
+                    break;
+                case 2:
+                    trovaMezzoPerId(scanner, mezziDAO, Tipo_mezzo.AUTOBUS);
+                    break;
+                case 3:
+                    verificaStatoMezzo(scanner, mezziDAO, Tipo_mezzo.AUTOBUS);
+                    break;
+                case 4:
+                    gestisciBigliettiVidimati(scanner, formatter, mezziDAO, Tipo_mezzo.AUTOBUS);
+                    break;
+                case 5:
+                    return;
+                default:
+                    System.out.println("Scelta non valida. Riprova.");
+            }
+        }
+    }
+
+    private static void gestisciTram(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezziDAO) {
+        while (true) {
+            System.out.println("Gestione Tram:");
+            System.out.println("1 - Lista tram");
+            System.out.println("2 - Trova tram per id");
+            System.out.println("3 - Verifica stato tram (attivo/in manutenzione)");
+            System.out.println("4 - Biglietti vidimati");
+            System.out.println("5 - Torna indietro");
+            int scelta = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (scelta) {
+                case 1:
+                    mostraListaMezzi(mezziDAO, Tipo_mezzo.TRAM);
+                    break;
+                case 2:
+                    trovaMezzoPerId(scanner, mezziDAO, Tipo_mezzo.TRAM);
+                    break;
+                case 3:
+                    verificaStatoMezzo(scanner, mezziDAO, Tipo_mezzo.TRAM);
+                    break;
+                case 4:
+                    gestisciBigliettiVidimati(scanner, formatter, mezziDAO, Tipo_mezzo.TRAM);
+                    break;
+                case 5:
                     return;
                 default:
                     System.out.println("Scelta non valida. Riprova.");
@@ -857,7 +960,7 @@ public class Application {
         } else {
             System.out.println("Creazione nuova tessera:");
 
-            Tessera nuovaTessera = new Tessera(Today,Today.plusYears(1),true,utenteTrovato);
+            Tessera nuovaTessera = new Tessera(Today, Today.plusYears(1), true, utenteTrovato);
             utenteTrovato.setTessera(nuovaTessera);
             utenteDAO.aggiornaUtente(utenteTrovato);
             System.out.println("Tessera associata con successo all'utente: " + utenteTrovato.getNome() + " " + utenteTrovato.getCognome() + "\ncon ID: " + utenteTrovato.getId());
@@ -868,6 +971,131 @@ public class Application {
 
 
     }
+
+
+    //METODI GESTIONE MEZZI
+
+
+    private static void aggiungiMezzo(MezziDAO mezziDAO, StatoDAO statoDAO, Scanner scanner, DateTimeFormatter formatter) {
+        try {
+            System.out.println("Che tipo di mezzo è? [AUTOBUS, TRAM]");
+            String tipoMezzo = scanner.nextLine();
+
+            System.out.println("Qual è la capienza del mezzo? ");
+            int capienzaMezzo = Integer.parseInt(scanner.nextLine());
+
+            System.out.println("Quanti giri deve percorrere? ");
+            int giriMezzo = Integer.parseInt(scanner.nextLine());
+
+            System.out.println("Vuoi inserire uno stato al mezzo? [si/no]");
+            String risp = scanner.nextLine();
+
+            String statoMezzo = "";
+            LocalDate dataInizio = null;
+            LocalDate dataFine = null;
+
+
+            if (risp.equalsIgnoreCase("si")) {
+                System.out.println("Inserisci lo stato del mezzo: [SERVIZIO, MANUTENZIONE]");
+                statoMezzo = scanner.nextLine();
+
+                System.out.println("Inserire data di inizio: [gg/mm/aaaa]");
+                dataInizio = LocalDate.parse(scanner.nextLine(), formatter);
+
+                if (statoMezzo.equals("MANUTENZIONE")) dataFine = dataInizio.plusMonths(1);
+
+            }
+
+            Mezzi nuovoMezzo = new Mezzi(capienzaMezzo, Tipo_mezzo.valueOf(tipoMezzo), giriMezzo);
+            Stato nuovoStato = new Stato(Stato_mezzo.valueOf(statoMezzo), dataInizio, dataFine, nuovoMezzo);
+
+            nuovoMezzo.setStato(nuovoStato);
+
+            System.out.println(nuovoMezzo.getTipo_mezzo() + "è stato creato con successo");
+            mezziDAO.createMezzi(nuovoMezzo);
+
+            System.out.println("L'ID del mezzo sarà: " + nuovoMezzo.getId());
+            System.out.println("Stato del mezzo ha ID: " + nuovoStato.getId());
+
+        } catch (Exception e) {
+            System.out.println("Errore : " + e.getMessage());
+        }
+
+
+    }
+
+    private static void mostraParcoMezzi(MezziDAO mezziDAO) {
+        List<Mezzi> mezziList = mezziDAO.getAllMezzi();
+        if (mezziList.isEmpty()) {
+            System.out.println("Il parco mezzi è vuoto.");
+        } else {
+            System.out.println("Elenco completo dei mezzi:");
+            for (Mezzi mezzo : mezziList) {
+                System.out.println("ID: " + mezzo.getId() + ", Tipo: " + mezzo.getTipo_mezzo() + ", Capienza: " + mezzo.getCapienza() + ", Numero di giri: " + mezzo.getNum_giri());
+            }
+        }
+    }
+
+
+    private static void mostraListaMezzi(MezziDAO mezziDAO, Tipo_mezzo tipo) {
+        System.out.println("Lista degli autobus:\n\n" + mezziDAO.getMezziByTipo(tipo) + "\n");
+    }
+
+    private static void trovaMezzoPerId(Scanner scanner, MezziDAO mezziDAO, Tipo_mezzo tipo) {
+
+        try {
+            System.out.println("Inserire l'ID del mezzo da cercare: ");
+            String mezzoID = scanner.nextLine();
+
+            if (mezzoID == null || mezzoID.trim().isEmpty()) {
+                System.out.println("Errore: ID del mezzo non può essere vuoto.");
+                return;
+            }
+
+            Mezzi mezzoTrovato = mezziDAO.getMezzoById(UUID.fromString(mezzoID));
+
+            if (mezzoTrovato != null) {
+                System.out.println("Il mezzo è stato trovato\nID : " + mezzoTrovato.getId() + " Capienza dell'autobus: " + mezzoTrovato.getCapienza() + " Numero dei giri: " + mezzoTrovato.getNum_giri() + "\n\n");
+            } else {
+                System.out.println("Nessun mezzo trovato con l'ID fornito.");
+            }
+
+        } catch (Exception e) {
+            System.out.println("errore: " + e.getMessage());
+        }
+
+    }
+
+    private static void verificaStatoMezzo(Scanner scanner, MezziDAO mezziDAO, Tipo_mezzo tipo) {
+        System.out.println("Inserisci l'ID del mezzo per verificare lo stato: ");
+        String mezzoID = scanner.nextLine();
+
+        if (mezzoID == null || mezzoID.trim().isEmpty()) {
+            System.out.println("Errore: ID del mezzo non può essere vuoto.");
+            return;
+        }
+
+        Mezzi mezzoTrovato = mezziDAO.getMezzoById(UUID.fromString(mezzoID));
+
+        try {
+            System.out.println("Stato del mezzo con ID " + mezzoTrovato.getId() + ": " + mezzoTrovato.getStato().getStato_mezzo());
+        } catch (Exception e) {
+            System.out.println("Nessun mezzo trovato con l'ID fornito.");
+            System.out.println(e.getMessage());
+        }
+
+
+
+    }
+
+
+    private static void gestisciBigliettiVidimati(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezziDAO, Tipo_mezzo tipo) {
+
+
+
+    }
+
+    //METODI GESTIONE TRATTA
 
 
 }

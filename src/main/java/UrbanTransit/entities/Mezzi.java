@@ -28,8 +28,11 @@ public class Mezzi {
 
     private int num_giri;
 
-    @OneToOne(mappedBy = "mezzo")
+    @OneToOne(mappedBy = "mezzo", cascade = CascadeType.ALL)
     private Timbrati timbrati;
+
+    @OneToOne(mappedBy = "mezzo", cascade = CascadeType.ALL)
+    private Stato stato;
 
 
     public Mezzi() {
@@ -39,6 +42,14 @@ public class Mezzi {
         this.capienza = capienza;
         this.tipo_mezzo = tipo_mezzo;
         this.num_giri = num_giri;
+
+    }
+
+    public Mezzi(int capienza, Tipo_mezzo tipo_mezzo, int num_giri, Stato stato) {
+        this.capienza = capienza;
+        this.tipo_mezzo = tipo_mezzo;
+        this.num_giri = num_giri;
+        this.stato = stato;
     }
 
     public Tipo_mezzo getTipo_mezzo() {
@@ -75,6 +86,14 @@ public class Mezzi {
 
     public void setNum_giri(int num_giri) {
         this.num_giri = num_giri;
+    }
+
+    public Stato getStato() {
+        return stato;
+    }
+
+    public void setStato(Stato stato) {
+        this.stato = stato;
     }
 
     @Override
