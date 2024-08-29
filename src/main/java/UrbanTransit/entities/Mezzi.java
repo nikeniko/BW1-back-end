@@ -28,8 +28,11 @@ public class Mezzi {
 
     private int num_giri;
 
-    @OneToOne(mappedBy = "mezzo")
+    @OneToOne(mappedBy = "mezzo", cascade = CascadeType.ALL)
     private Timbrati timbrati;
+
+    @OneToOne(mappedBy = "mezzo", cascade = CascadeType.ALL)
+    private Stato stato;
 
 
     public Mezzi() {

@@ -26,7 +26,7 @@ public class Stato {
     private LocalDate data_fine;
 
     @OneToOne
-    private Mezzi mezzi;
+    private Mezzi mezzo;
 
     public Stato() {
     }
@@ -35,7 +35,7 @@ public class Stato {
         this.stato_mezzo = stato_mezzo;
         this.data_inizio = data_inizio;
         this.data_fine = data_fine;
-        this.mezzi = mezzi;
+        this.mezzo = mezzi;
     }
 
     public UUID getId() {
@@ -68,11 +68,11 @@ public class Stato {
     }
 
     public Mezzi getMezzi() {
-        return mezzi;
+        return mezzo;
     }
 
     public void setMezzi(Mezzi mezzi) {
-        this.mezzi = mezzi;
+        this.mezzo = mezzo;
     }
 
     @Override
@@ -82,7 +82,7 @@ public class Stato {
                 ", stato_mezzo=" + stato_mezzo +
                 ", data_inizio=" + data_inizio +
                 ", data_fine=" + data_fine +
-                ", mezzi=" + mezzi +
+                ", mezzo=" + mezzo +
                 '}';
     }
 }
