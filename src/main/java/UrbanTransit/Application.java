@@ -907,19 +907,36 @@ public class Application {
 
 
     private static Tessera creaNuovaTessera(Scanner scanner, DateTimeFormatter formatter, TesseraDAO tesseraDAO, UtenteDAO utenteDAO) {
-        System.out.println("Creazione nuova tessera:");
-        System.out.println("Inserisci data di inizio tessera (dd/MM/yyyy):");
-        String dataInizioStr = scanner.nextLine();
-        LocalDate dataInizio = LocalDate.parse(dataInizioStr, formatter);
+        System.out.println("Inserire il proprio ID utente: ");
+        String idUtente = scanner.nextLine();
+        Utente utenteTrovato = utenteDAO.trovaUtentePerId(UUID.fromString(idUtente));
 
-        Tessera nuovaTessera = new Tessera();
-        nuovaTessera.setData_inizio(dataInizio);
-        nuovaTessera.setData_scadenza(dataInizio.plusYears(1));
-        nuovaTessera.setStato_tessera(true);
-        tesseraDAO.salvaTessera(nuovaTessera);
-        System.out.println("Tessera creata con successo! ID: " + nuovaTessera.getId());
+        LocalDate Today = LocalDate.now();
 
-        return nuovaTessera;
+        if (utenteTrovato.getTessera() != null) {
+            LocalDate data_sca = utenteTrovato.getTessera().getData_scadenza();
+            if (data_sca.isBefore(Today)) {
+                System.out.println("La tessera è scaduta.");
+            } else if (data_sca.equals(Today)) {
+                System.out.println("La tessera scade oggi");
+            } else {
+                System.out.println("La tessera è presente e non è ancora scaduta.\n Scade il " + data_sca.format(formatter) + "\n\n");
+            }
+
+            return utenteTrovato.getTessera();
+        } else {
+            System.out.println("Creazione nuova tessera:");
+
+            Tessera nuovaTessera = new Tessera(Today,Today.plusYears(1),true,utenteTrovato);
+            utenteTrovato.setTessera(nuovaTessera);
+            utenteDAO.aggiornaUtente(utenteTrovato);
+            System.out.println("Tessera associata con successo all'utente: " + utenteTrovato.getNome() + " " + utenteTrovato.getCognome() + "\ncon ID: " + utenteTrovato.getId());
+            System.out.println("tessera ID " + utenteTrovato.getTessera().getId() + "\n\n");
+
+            return nuovaTessera;
+        }
+
+
     }
 
 }
