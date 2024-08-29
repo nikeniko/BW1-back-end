@@ -32,6 +32,7 @@ public class Application {
         MezziDAO mezziDAO = new MezziDAO(em);
         TrattaDAO trattaDAO = new TrattaDAO(em);
         PercorrenzaDAO percorrenzaDAO = new PercorrenzaDAO(em);
+        StatoDAO statoDAO = new StatoDAO(em);
 
         Scanner scanner = new Scanner(System.in);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -48,7 +49,7 @@ public class Application {
                     gestisciMenuUtente(scanner, formatter, utenteDAO, tesseraDAO, abbonamentoDAO, bigliettoDAO, distributoriDAO, rivenditoriDAO);
                     break;
                 case 2:
-                    gestisciMenuAmministratore(scanner, formatter, utenteDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, abbonamentoDAO, bigliettoDAO, mezziDAO, trattaDAO, percorrenzaDAO);
+                    gestisciMenuAmministratore(scanner, formatter, utenteDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, abbonamentoDAO, bigliettoDAO, mezziDAO, trattaDAO, percorrenzaDAO, statoDAO);
                     break;
                 default:
                     System.out.println("Scelta non valida. Riprova.");
@@ -93,7 +94,7 @@ public class Application {
         }
     }
 
-    private static void gestisciMenuAmministratore(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, AbbonamentoDAO abbonamentoDAO, BigliettoDAO bigliettoDAO, MezziDAO mezziDAO, TrattaDAO trattaDAO, PercorrenzaDAO percorrenzaDAO) {
+    private static void gestisciMenuAmministratore(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, AbbonamentoDAO abbonamentoDAO, BigliettoDAO bigliettoDAO, MezziDAO mezziDAO, TrattaDAO trattaDAO, PercorrenzaDAO percorrenzaDAO, StatoDAO statoDAO) {
         System.out.println("Inserisci la password amministratore:");
         String password = scanner.nextLine();
 
@@ -124,7 +125,7 @@ public class Application {
                     gestisciDistributoriERivenditori(scanner, formatter, distributoriDAO, rivenditoriDAO, abbonamentoDAO, bigliettoDAO);
                     break;
                 case 4:
-                    gestisciMezzi(scanner, formatter, mezziDAO);
+                    gestisciMezzi(scanner, formatter, mezziDAO, statoDAO);
                     break;
                 case 5:
                     gestisciTratte(scanner, trattaDAO, percorrenzaDAO);
@@ -313,7 +314,7 @@ public class Application {
         }
     }
 
-    private static void gestisciMezzi(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezziDAO) {
+    private static void gestisciMezzi(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezziDAO, StatoDAO statoDAO) {
         while (true) {
             System.out.println("Gestione Mezzi:");
             System.out.println("1 - Gestione autobus");
@@ -335,7 +336,7 @@ public class Application {
                     mostraParcoMezzi(mezziDAO);
                     break;
                 case 4:
-                    AggiungiMezzo();
+                    aggiungiMezzo(mezziDAO, statoDAO, scanner, formatter);
                 case 5:
                     return;
                 default:
@@ -1077,7 +1078,7 @@ public class Application {
 
     //METODI GESTIONE MEZZI
 
-    private static void createMezzi(MezziDAO mezziDAO, StatoDAO statoDAO, Scanner scanner, DateTimeFormatter formatter) {
+    private static void aggiungiMezzo(MezziDAO mezziDAO, StatoDAO statoDAO, Scanner scanner, DateTimeFormatter formatter) {
         try {
             System.out.println("Che tipo di mezzo è? [AUTOBUS, TRAM]");
             String tipoMezzo = scanner.nextLine();
