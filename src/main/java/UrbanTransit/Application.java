@@ -10,6 +10,7 @@ import jakarta.persistence.Persistence;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 
@@ -87,7 +88,7 @@ public class Application {
                 default:
                     System.out.println("Scelta non valida. Riprova.");
             }
-            
+
             } catch (InputMismatchException e) {
                 System.out.println("Errore: Inserisci un numero valido.");
                 scanner.nextLine();
@@ -105,6 +106,7 @@ public class Application {
         }
 
         while (true) {
+            try {
             System.out.println("Cosa vuoi fare oggi?");
             System.out.println("1 - Gestione utenti");
             System.out.println("2 - Gestione tessere");
@@ -135,11 +137,18 @@ public class Application {
                 default:
                     System.out.println("Scelta non valida. Riprova.");
             }
+
+            } catch (InputMismatchException e) {
+                    System.out.println("Errore: Inserisci un numero valido.");
+                    scanner.nextLine();
+            }
+
         }
     }
 
     private static void gestisciUtenti(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO) {
         while (true) {
+            try {
             System.out.println("Gestione Utenti:");
             System.out.println("1 - Trova utente per id");
             System.out.println("2 - Ottieni la lista di tutti gli utenti");
@@ -167,11 +176,17 @@ public class Application {
                 default:
                     System.out.println("Scelta non valida. Riprova.");
             }
+
+        } catch (InputMismatchException e) {
+            System.out.println("Errore: Inserisci un numero valido.");
+            scanner.nextLine();
+        }
         }
     }
 
     private static void gestisciTessere(Scanner scanner, DateTimeFormatter formatter, TesseraDAO tesseraDAO) {
         while (true) {
+            try {
             System.out.println("Gestione Tessere:");
             System.out.println("1 - Ricerca Tessera");
             System.out.println("2 - Ottieni la lista di tutte le tessere");
@@ -199,11 +214,17 @@ public class Application {
                 default:
                     System.out.println("Scelta non valida. Riprova.");
             }
+
+        } catch (InputMismatchException e) {
+            System.out.println("Errore: Inserisci un numero valido.");
+            scanner.nextLine();
+        }
         }
     }
 
     private static void gestisciDistributoriERivenditori(Scanner scanner, DateTimeFormatter formatter, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, AbbonamentoDAO abbonamentoDAO, BigliettoDAO bigliettoDAO) {
         while (true) {
+            try {
             System.out.println("Gestione Distributori/Rivenditori:");
             System.out.println("1 - Gestione Distributori");
             System.out.println("2 - Gestione Rivenditori");
@@ -223,11 +244,17 @@ public class Application {
                 default:
                     System.out.println("Scelta non valida. Riprova.");
             }
+
+        } catch (InputMismatchException e) {
+            System.out.println("Errore: Inserisci un numero valido.");
+            scanner.nextLine();
+        }
         }
     }
 
     private static void gestisciDistributori(Scanner scanner, DateTimeFormatter formatter, DistributoriDAO distributoriDAO, AbbonamentoDAO abbonamentoDAO) {
         while (true) {
+            try {
             System.out.println("Gestione Distributori:");
             System.out.println("1 - Elenco Distributori");
             System.out.println("2 - Aggiungi Distributore");
@@ -267,11 +294,17 @@ public class Application {
                 default:
                     System.out.println("Scelta non valida. Riprova.");
             }
+
+            } catch (InputMismatchException e) {
+                System.out.println("Errore: Inserisci un numero valido.");
+                scanner.nextLine();
+            }
         }
     }
 
     private static void gestisciRivenditori(Scanner scanner, DateTimeFormatter formatter, RivenditoriDAO rivenditoriDAO, AbbonamentoDAO abbonamentoDAO) {
         while (true) {
+            try{
             System.out.println("Gestione Rivenditori:");
             System.out.println("1 - Elenco Rivenditori");
             System.out.println("2 - Aggiungi Rivenditore");
@@ -311,6 +344,11 @@ public class Application {
                 default:
                     System.out.println("Scelta non valida. Riprova.");
             }
+
+        } catch (InputMismatchException e) {
+            System.out.println("Errore: Inserisci un numero valido.");
+            scanner.nextLine();
+        }
         }
     }
 
@@ -321,9 +359,17 @@ public class Application {
         String nome = scanner.nextLine();
         System.out.println("Inserisci cognome:");
         String cognome = scanner.nextLine();
-        System.out.println("Inserisci data di nascita (dd/MM/yyyy):");
-        String dataNascitaStr = scanner.nextLine();
-        LocalDate dataNascita = LocalDate.parse(dataNascitaStr, formatter);
+        LocalDate dataNascita = null;
+
+        while (dataNascita == null) {
+            System.out.println("Inserisci data di nascita (dd/MM/yyyy):");
+            String dataNascitaStr = scanner.nextLine();
+            try {
+                dataNascita = LocalDate.parse(dataNascitaStr, formatter);
+            } catch (DateTimeParseException e) {
+                System.out.println("Formato della data non valido. Per favore, riprova.");
+            }
+        }
 
         Utente nuovoUtente = new Utente();
         nuovoUtente.setNome(nome);
@@ -352,11 +398,14 @@ public class Application {
 
                 System.out.println("Inserisci nuova data di nascita (dd/MM/yyyy) (attuale: " + utente.getData_nascita().format(formatter) + "):");
                 String nuovaDataNascitaStr = scanner.nextLine();
-                LocalDate nuovaDataNascita = LocalDate.parse(nuovaDataNascitaStr, formatter);
-                utente.setData_nascita(nuovaDataNascita);
-
-                utenteDAO.aggiornaUtente(utente);
-                System.out.println("Utente aggiornato con successo!");
+                try {
+                    LocalDate nuovaDataNascita = LocalDate.parse(nuovaDataNascitaStr, formatter);
+                    utente.setData_nascita(nuovaDataNascita);
+                    utenteDAO.aggiornaUtente(utente);
+                    System.out.println("Utente aggiornato con successo!");
+                } catch (DateTimeParseException e) {
+                    System.out.println("Formato della data non valido. Riprova.");
+                }
             } else {
                 System.out.println("Utente non trovato.");
             }
