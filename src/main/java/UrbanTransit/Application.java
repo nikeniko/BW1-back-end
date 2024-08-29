@@ -319,7 +319,8 @@ public class Application {
             System.out.println("1 - Gestione autobus");
             System.out.println("2 - Gestione Tram");
             System.out.println("3 - Parco mezzi");
-            System.out.println("4 - Torna al menu precedente");
+            System.out.println("4 - Aggiungi mezzo");
+            System.out.println("5 - Torna al menu precedente");
             int scelta = scanner.nextInt();
             scanner.nextLine();
 
@@ -334,6 +335,8 @@ public class Application {
                     mostraParcoMezzi(mezziDAO);
                     break;
                 case 4:
+                    AggiungiMezzo();
+                case 5:
                     return;
                 default:
                     System.out.println("Scelta non valida. Riprova.");
