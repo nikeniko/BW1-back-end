@@ -500,7 +500,7 @@ public class Application {
                     eliminaTratta(scanner, trattaDAO);
                     break;
                 case 4:
-                    listaTratte(trattaDAO);
+                    listaTratte(trattaDAO, percorrenzaDAO);
                     break;
                 case 5:
                     return;
@@ -1500,47 +1500,9 @@ public class Application {
             System.out.println("Nessun mezzo trovato con l'ID fornito.");
             System.out.println(e.getMessage());
         }
-
-
-
     }
-
-
     private static void gestisciBigliettiVidimati(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezziDAO, Tipo_mezzo tipo) {
-
-
-
     }
-
-    //METODI GESTIONE TRATTA
-
-    private static void aggiungiTratta(Scanner scanner, TrattaDAO trattaDAO) {
-
-    }
-
-    private static void modificaTratta(Scanner scanner, TrattaDAO trattaDAO) {
-
-    }
-
-    private static void eliminaTratta(Scanner scanner, TrattaDAO trattaDAO) {
-
-    }
-
-    private static void listaTratte(TrattaDAO trattaDAO) {
-        
-    }
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 
