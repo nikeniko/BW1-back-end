@@ -52,4 +52,8 @@ public class TesseraDAO {
         query.setParameter("stato", stato);
         return query.getResultList();
     }
+
+    public EntityManager getEntityManager() {
+        return em;
+    }
 }

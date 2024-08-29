@@ -26,7 +26,11 @@ public class Stato {
     private LocalDate data_fine;
 
     @OneToOne
+    // mezzo_id
     private Mezzi mezzo;
+
+    @OneToOne(mappedBy = "stato")
+    private Percorrenza percorrenza;
 
     public Stato() {
     }
@@ -67,12 +71,21 @@ public class Stato {
         this.data_fine = data_fine;
     }
 
-    public Mezzi getMezzi() {
+    public Mezzi getMezzo() {
         return mezzo;
     }
 
-    public void setMezzi(Mezzi mezzo) {
+    public void setMezzo(Mezzi mezzo) {
         this.mezzo = mezzo;
+    }
+
+
+    public Percorrenza getPercorrenza() {
+        return percorrenza;
+    }
+
+    public void setPercorrenza(Percorrenza percorrenza) {
+        this.percorrenza = percorrenza;
     }
 
     @Override
@@ -82,7 +95,7 @@ public class Stato {
                 ", stato_mezzo=" + stato_mezzo +
                 ", data_inizio=" + data_inizio +
                 ", data_fine=" + data_fine +
-                ", mezzi=" + mezzo +
+                ", mezzo=" + mezzo +
                 '}';
     }
 }

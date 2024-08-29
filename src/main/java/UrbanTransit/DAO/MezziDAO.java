@@ -1,11 +1,13 @@
 package UrbanTransit.DAO;
 
+import UrbanTransit.entities.Biglietto;
 import UrbanTransit.entities.Mezzi;
 import UrbanTransit.entities.Stato;
 import UrbanTransit.enums.Stato_mezzo;
 import UrbanTransit.enums.Tipo_mezzo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -84,7 +86,15 @@ public class MezziDAO {
                 .setParameter("tipo_mezzo", tipo)
                 .getResultList();
     }
-
-
-
+    // Trova i biglietti vidimati su un mezzo in un determinato intervallo di tempo
+    public List<Biglietto> trovaBigliettiVidimati(UUID mezzoId, LocalDate dataInizio, LocalDate dataFine) {
+        TypedQuery<Biglietto> query = entityManager.createQuery(
+                "SELECT b FROM Biglietto b WHERE b.timbrati.mezzo.id = :mezzoId AND b.timbrati.data_timbro BETWEEN :dataInizio AND :dataFine",
+                Biglietto.class
+        );
+        query.setParameter("mezzoId", mezzoId);
+        query.setParameter("dataInizio", dataInizio);
+        query.setParameter("dataFine", dataFine);
+        return query.getResultList();
+    }
 }
