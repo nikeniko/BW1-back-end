@@ -94,7 +94,7 @@ public class Application {
         }
     }
 
-    private static void gestisciMenuAmministratore(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, AbbonamentoDAO abbonamentoDAO, BigliettoDAO bigliettoDAO, MezziDAO mezziDAO, TrattaDAO trattaDAO, PercorrenzaDAO percorrenzaDAO, StatoDAO statoDAO) {
+    private static void gestisciMenuAmministratore(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, AbbonamentoDAO abbonamentoDAO, BigliettoDAO bigliettoDAO, MezziDAO mezzoDAO, TrattaDAO trattaDAO, PercorrenzaDAO percorrenzaDAO, StatoDAO statoDAO) {
         System.out.println("Inserisci la password amministratore:");
         String password = scanner.nextLine();
 
@@ -125,7 +125,7 @@ public class Application {
                     gestisciDistributoriERivenditori(scanner, formatter, distributoriDAO, rivenditoriDAO, abbonamentoDAO, bigliettoDAO);
                     break;
                 case 4:
-                    gestisciMezzi(scanner, formatter, mezziDAO, statoDAO);
+                    gestisciMezzi(scanner, formatter, mezzoDAO, statoDAO);
                     break;
                 case 5:
                     gestisciTratte(scanner, trattaDAO, percorrenzaDAO);
@@ -314,7 +314,7 @@ public class Application {
         }
     }
 
-    private static void gestisciMezzi(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezziDAO, StatoDAO statoDAO) {
+    private static void gestisciMezzi(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezzoDAO, StatoDAO statoDAO) {
         while (true) {
             System.out.println("Gestione Mezzi:");
             System.out.println("1 - Gestione autobus");
@@ -327,16 +327,16 @@ public class Application {
 
             switch (scelta) {
                 case 1:
-                    gestisciAutobus(scanner, formatter, mezziDAO);
+                    gestisciAutobus(scanner, formatter, mezzoDAO);
                     break;
                 case 2:
-                    gestisciTram(scanner, formatter, mezziDAO);
+                    gestisciTram(scanner, formatter, mezzoDAO);
                     break;
                 case 3:
-                    mostraParcoMezzi(mezziDAO);
+                    mostraParcoMezzi(mezzoDAO);
                     break;
                 case 4:
-                    aggiungiMezzo(mezziDAO, statoDAO, scanner, formatter);
+                    aggiungiMezzo(mezzoDAO, statoDAO, scanner, formatter);
                 case 5:
                     return;
                 default:
@@ -345,7 +345,7 @@ public class Application {
         }
     }
 
-    private static void gestisciAutobus(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezziDAO) {
+    private static void gestisciAutobus(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezzoDAO) {
         while (true) {
             System.out.println("Gestione Autobus:");
             System.out.println("1 - Lista autobus");
@@ -358,16 +358,16 @@ public class Application {
 
             switch (scelta) {
                 case 1:
-                    mostraListaMezzi(mezziDAO, Tipo_mezzo.AUTOBUS);
+                    mostraListaMezzi(mezzoDAO, Tipo_mezzo.AUTOBUS);
                     break;
                 case 2:
-                    trovaMezzoPerId(scanner, mezziDAO, Tipo_mezzo.AUTOBUS);
+                    trovaMezzoPerId(scanner, mezzoDAO, Tipo_mezzo.AUTOBUS);
                     break;
                 case 3:
-                    verificaStatoMezzo(scanner, mezziDAO, Tipo_mezzo.AUTOBUS);
+                    verificaStatoMezzo(scanner, mezzoDAO, Tipo_mezzo.AUTOBUS);
                     break;
                 case 4:
-                    gestisciBigliettiVidimati(scanner, formatter, mezziDAO, Tipo_mezzo.AUTOBUS);
+                    gestisciBigliettiVidimati(scanner, formatter, mezzoDAO, Tipo_mezzo.AUTOBUS);
                     break;
                 case 5:
                     return;
@@ -377,7 +377,7 @@ public class Application {
         }
     }
 
-    private static void gestisciTram(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezziDAO) {
+    private static void gestisciTram(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezzoDAO) {
         while (true) {
             System.out.println("Gestione Tram:");
             System.out.println("1 - Lista tram");
@@ -390,16 +390,16 @@ public class Application {
 
             switch (scelta) {
                 case 1:
-                    mostraListaMezzi(mezziDAO, Tipo_mezzo.TRAM);
+                    mostraListaMezzi(mezzoDAO, Tipo_mezzo.TRAM);
                     break;
                 case 2:
-                    trovaMezzoPerId(scanner, mezziDAO, Tipo_mezzo.TRAM);
+                    trovaMezzoPerId(scanner, mezzoDAO, Tipo_mezzo.TRAM);
                     break;
                 case 3:
-                    verificaStatoMezzo(scanner, mezziDAO, Tipo_mezzo.TRAM);
+                    verificaStatoMezzo(scanner, mezzoDAO, Tipo_mezzo.TRAM);
                     break;
                 case 4:
-                    gestisciBigliettiVidimati(scanner, formatter, mezziDAO, Tipo_mezzo.TRAM);
+                    gestisciBigliettiVidimati(scanner, formatter, mezzoDAO, Tipo_mezzo.TRAM);
                     break;
                 case 5:
                     return;
