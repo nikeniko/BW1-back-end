@@ -1098,7 +1098,7 @@ public class Application {
 
 
             if (risp.equalsIgnoreCase("si")) {
-                System.out.println("Inserisci lo stato del mezzo: [SERVIZIO, MANUTENZIONE]");
+                System.out.println("Inserisci lo stato del mezzo: [IN_SERVIZIO, MANUTENZIONE]");
                 statoMezzo = scanner.nextLine();
 
                 System.out.println("Inserire data di inizio: [gg/mm/aaaa]");
