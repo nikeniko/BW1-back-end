@@ -141,7 +141,7 @@ public class Application {
                         gestisciMezzi(scanner, formatter, mezzoDAO, statoDAO);
                         break;
                     case 5:
-                        gestisciTratte(scanner, trattaDAO, percorrenzaDAO);
+                        gestisciTratte(scanner,trattaDAO, percorrenzaDAO, mezzoDAO, statoDAO);
                         break;
                     case 6:
                         return;
@@ -477,7 +477,7 @@ public class Application {
         }
     }
 
-    private static void gestisciTratte(Scanner scanner, TrattaDAO trattaDAO,PercorrenzaDAO percorrenzaDAO) {
+    private static void gestisciTratte(Scanner scanner, TrattaDAO trattaDAO,PercorrenzaDAO percorrenzaDAO, MezziDAO mezziDAO, StatoDAO statoDAO) {
         while (true) {
             try {
                 System.out.println("Gestione Tratte:");
@@ -485,7 +485,8 @@ public class Application {
                 System.out.println("2 - Modifica tratta");
                 System.out.println("3 - Elimina tratta");
                 System.out.println("4 - Lista tratte");
-                System.out.println("5 - Torna indietro");
+                System.out.println("5 - Associa tratta ad un autobus");
+                System.out.println("6 - Torna indietro");
                 int scelta = scanner.nextInt();
                 scanner.nextLine();
 
@@ -503,6 +504,9 @@ public class Application {
                         listaTratte(trattaDAO, percorrenzaDAO);
                         break;
                     case 5:
+                        associaTratta(scanner,mezziDAO, statoDAO, percorrenzaDAO, trattaDAO);
+                        break;
+                    case 6:
                         return;
                     default:
                         System.out.println("Scelta non valida. Riprova.");
@@ -1475,6 +1479,39 @@ public class Application {
                     ", Tempo di Percorrenza Previsto: " + tratta.getTempo_percorrenza() + " minuti" + (tratta.getPercorrenza() != null ? ", Tempo di Percorrenza Effettivo: " + tratta.getPercorrenza().getTempo_effettivo() + " minuti" : ""));
         }
     }
+
+    private static void associaTratta(Scanner scanner, MezziDAO mezziDAO, StatoDAO statoDAO, PercorrenzaDAO percorrenzaDAO, TrattaDAO trattaDAO) {
+
+        System.out.println("Inserisci l'ID dell'autobus a cui associare una tratta: ");
+        String autobusID = scanner.nextLine();
+
+        Mezzi autobusTrovato = mezziDAO.getMezzoById(UUID.fromString(autobusID));
+
+        Stato statoTrovato = statoDAO.getStatoById(autobusTrovato.getStato().getId());
+
+
+
+        if (statoTrovato.getStato_mezzo().equals(Stato_mezzo.IN_SERVIZIO)) {
+            System.out.println("Quale tratta vuoi associare a quest'autobus?");
+            trattaDAO.trovaTutteTratte().stream().forEach(System.out::println);
+
+            System.out.println("\nInserisci l'ID della tratta che vuoi associare: ");
+            String trattaID = scanner.nextLine();
+
+            Tratta trattaTrovata = trattaDAO.getTrattaById(UUID.fromString(trattaID));
+
+            Percorrenza nuovaPercorrenza = new Percorrenza(statoTrovato, trattaTrovata);
+            percorrenzaDAO.createPercorrenza(nuovaPercorrenza);
+
+            System.out.println("Fantastico! l'autobus è stato correttamente associato ad una tratta!");
+            System.out.println("L'autobus " + nuovaPercorrenza.getStato().getMezzo().getId() +
+                    "\n l'autobus partirà da : " + nuovaPercorrenza.getTratta().getZona_partenza() +
+                    "\n e arriverà a :" + nuovaPercorrenza.getTratta().getCapolinea());
+            System.out.println("Il tempo previsto per la tratta è di : " + trattaTrovata.getTempo_percorrenza() + " minuti");
+        }
+
+    }
+
 
 }
 

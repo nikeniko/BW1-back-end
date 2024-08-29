@@ -16,9 +16,11 @@ public class Percorrenza {
     private int tempo_effettivo;
 
     @OneToOne
+    //stato_id
     private Stato stato;
 
     @OneToOne
+    //tratta_id
     private Tratta tratta;
 
 
@@ -28,6 +30,11 @@ public class Percorrenza {
 
     public Percorrenza(int tempo_effettivo, Stato stato, Tratta tratta ) {
         this.tempo_effettivo = tempo_effettivo;
+        this.stato = stato;
+        this.tratta = tratta;
+    }
+
+    public Percorrenza(Stato stato, Tratta tratta) {
         this.stato = stato;
         this.tratta = tratta;
     }
