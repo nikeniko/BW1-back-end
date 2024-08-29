@@ -31,11 +31,11 @@ public class Stato {
     public Stato() {
     }
 
-    public Stato(Stato_mezzo stato_mezzo, LocalDate data_inizio, LocalDate data_fine, Mezzi mezzi) {
+    public Stato(Stato_mezzo stato_mezzo, LocalDate data_inizio, LocalDate data_fine, Mezzi mezzo) {
         this.stato_mezzo = stato_mezzo;
         this.data_inizio = data_inizio;
         this.data_fine = data_fine;
-        this.mezzo = mezzi;
+        this.mezzo = mezzo;
     }
 
     public UUID getId() {
@@ -71,7 +71,7 @@ public class Stato {
         return mezzo;
     }
 
-    public void setMezzi(Mezzi mezzi) {
+    public void setMezzi(Mezzi mezzo) {
         this.mezzo = mezzo;
     }
 
