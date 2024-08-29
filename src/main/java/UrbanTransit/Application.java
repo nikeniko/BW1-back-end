@@ -49,10 +49,10 @@ public class Application {
 
                 switch (scelta) {
                     case 1:
-                        gestisciMenuUtente(scanner, formatter, utenteDAO, tesseraDAO, abbonamentoDAO, bigliettoDAO, distributoriDAO, rivenditoriDAO);
+                        gestisciMenuUtente(scanner, formatter, utenteDAO, tesseraDAO, abbonamentoDAO, bigliettoDAO, distributoriDAO, rivenditoriDAO, mezzoDAO, timbratiDAO);
                         break;
                     case 2:
-                        gestisciMenuAmministratore(scanner, formatter, utenteDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, abbonamentoDAO, bigliettoDAO, mezzoDAO, statoDAO, trattaDAO, percorrenzaDAO);
+                        gestisciMenuAmministratore(scanner, formatter, utenteDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, abbonamentoDAO, bigliettoDAO, mezzoDAO, trattaDAO, percorrenzaDAO, statoDAO, timbratiDAO);
                         break;
                     default:
                         System.out.println("Scelta non valida. Riprova.");
@@ -68,42 +68,42 @@ public class Application {
     private static void gestisciMenuUtente(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO, TesseraDAO tesseraDAO, AbbonamentoDAO abbonamentoDAO, BigliettoDAO bigliettoDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, MezziDAO mezzoDAO, TimbratiDAO timbratiDAO) {
         while (true) {
             try {
-            System.out.println("Cosa vuoi fare oggi?");
-            System.out.println("1. Registrati");
-            System.out.println("2. Modifica Profilo");
-            System.out.println("3. Elimina Profilo");
-            System.out.println("4. Ottieni una tessera UrbanTransit");
-            System.out.println("5. Compra un biglietto o abbonamento");
-            System.out.println("6. Vidima biglietto");
-            System.out.println("7. Torna al menù precedente");
-            int scelta = scanner.nextInt();
-            scanner.nextLine();
+                System.out.println("Cosa vuoi fare oggi?");
+                System.out.println("1. Registrati");
+                System.out.println("2. Modifica Profilo");
+                System.out.println("3. Elimina Profilo");
+                System.out.println("4. Ottieni una tessera UrbanTransit");
+                System.out.println("5. Compra un biglietto o abbonamento");
+                System.out.println("6. Vidima biglietto");
+                System.out.println("7. Torna al menù precedente");
+                int scelta = scanner.nextInt();
+                scanner.nextLine();
 
-            switch (scelta) {
-                case 1:
-                    registraUtente(scanner, formatter, utenteDAO);
-                    break;
-                case 2:
-                    modificaUtente(scanner, formatter, utenteDAO);
-                    break;
-                case 3:
-                    eliminaUtente(scanner, utenteDAO);
-                    break;
-                case 4:
-                    creaNuovaTessera(scanner, formatter, tesseraDAO, utenteDAO);
-                    break;
-                case 5:
-                    compraBigliettoOAbbonamento(scanner, formatter, abbonamentoDAO, bigliettoDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, utenteDAO);
-                    break;
-                case 6:
-                    vidimaBiglietto(scanner, bigliettoDAO, mezzoDAO, tesseraDAO, utenteDAO, timbratiDAO);
-                case 7:
-                    return;
-                default:
-                    System.out.println("Scelta non valida. Riprova.");
+                switch (scelta) {
+                    case 1:
+                        registraUtente(scanner, formatter, utenteDAO);
+                        break;
+                    case 2:
+                        modificaUtente(scanner, formatter, utenteDAO);
+                        break;
+                    case 3:
+                        eliminaUtente(scanner, utenteDAO);
+                        break;
+                    case 4:
+                        creaNuovaTessera(scanner, formatter, tesseraDAO, utenteDAO);
+                        break;
+                    case 5:
+                        compraBigliettoOAbbonamento(scanner, formatter, abbonamentoDAO, bigliettoDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, utenteDAO);
+                        break;
+                    case 6:
+                        vidimaBiglietto(scanner, bigliettoDAO, mezzoDAO, tesseraDAO, utenteDAO, timbratiDAO);
+                    case 7:
+                        return;
+                    default:
+                        System.out.println("Scelta non valida. Riprova.");
 
-            }
-        } catch (InputMismatchException e){
+                }
+            } catch (InputMismatchException e) {
                 System.out.println("Errore: Inserisci un numero valido.");
                 scanner.nextLine();
             }
@@ -123,41 +123,41 @@ public class Application {
             try {
 
 
-            System.out.println("Cosa vuoi fare oggi?");
-            System.out.println("1 - Gestione utenti");
-            System.out.println("2 - Gestione tessere");
-            System.out.println("3 - Gestione Distributori/Rivenditori");
-            System.out.println("4 - Gestione Mezzi");
-            System.out.println("5 - Gestione Tratte");
-            System.out.println("6 - Gestisci biglietti vidimati");
-            System.out.println("7 - Esci");
-            int scelta = scanner.nextInt();
-            scanner.nextLine();
+                System.out.println("Cosa vuoi fare oggi?");
+                System.out.println("1 - Gestione utenti");
+                System.out.println("2 - Gestione tessere");
+                System.out.println("3 - Gestione Distributori/Rivenditori");
+                System.out.println("4 - Gestione Mezzi");
+                System.out.println("5 - Gestione Tratte");
+                System.out.println("6 - Gestisci biglietti vidimati");
+                System.out.println("7 - Esci");
+                int scelta = scanner.nextInt();
+                scanner.nextLine();
 
-            switch (scelta) {
-                case 1:
-                    gestisciUtenti(scanner, formatter, utenteDAO);
-                    break;
-                case 2:
-                    gestisciTessere(scanner, formatter, tesseraDAO);
-                    break;
-                case 3:
-                    gestisciDistributoriERivenditori(scanner, formatter, distributoriDAO, rivenditoriDAO, abbonamentoDAO, bigliettoDAO);
-                    break;
-                case 4:
-                    gestisciMezzi(scanner, formatter, mezzoDAO, statoDAO);
-                    break;
-                case 5:
-                    gestisciTratte(scanner, trattaDAO, percorrenzaDAO);
-                    break;
-                case 6:
-                    gestisciBigliettiVidimati(scanner, timbratiDAO, mezzoDAO);
-                case 7:
-                    return;
-                default:
-                    System.out.println("Scelta non valida. Riprova.");
-            }
-            } catch (InputMismatchException e){
+                switch (scelta) {
+                    case 1:
+                        gestisciUtenti(scanner, formatter, utenteDAO);
+                        break;
+                    case 2:
+                        gestisciTessere(scanner, formatter, tesseraDAO);
+                        break;
+                    case 3:
+                        gestisciDistributoriERivenditori(scanner, formatter, distributoriDAO, rivenditoriDAO, abbonamentoDAO, bigliettoDAO);
+                        break;
+                    case 4:
+                        gestisciMezzi(scanner, formatter, mezzoDAO, statoDAO);
+                        break;
+                    case 5:
+                        gestisciTratte(scanner, trattaDAO, percorrenzaDAO, mezzoDAO, statoDAO);
+                        break;
+                    case 6:
+                        gestisciBigliettiVidimati(scanner, timbratiDAO, mezzoDAO);
+                    case 7:
+                        return;
+                    default:
+                        System.out.println("Scelta non valida. Riprova.");
+                }
+            } catch (InputMismatchException e) {
                 System.out.println("Errore: Inserisci un numero valido.");
                 scanner.nextLine();
             }
@@ -414,29 +414,29 @@ public class Application {
             try {
 
             System.out.println("Gestione Autobus:");
-            System.out.println("1 - Lista autobus");
-            System.out.println("2 - Trova autobus per id");
-            System.out.println("3 - Verifica stato autobus (attivo/in manutenzione)");
-            System.out.println("4 - Torna indietro");
-            int scelta = scanner.nextInt();
-            scanner.nextLine();
+                System.out.println("1 - Lista autobus");
+                System.out.println("2 - Trova autobus per id");
+                System.out.println("3 - Verifica stato autobus (attivo/in manutenzione)");
+                System.out.println("4 - Torna indietro");
+                int scelta = scanner.nextInt();
+                scanner.nextLine();
 
-            switch (scelta) {
-                case 1:
-                    mostraListaMezzi(mezzoDAO, Tipo_mezzo.AUTOBUS);
-                    break;
-                case 2:
-                    trovaMezzoPerId(scanner, mezzoDAO, Tipo_mezzo.AUTOBUS);
-                    break;
-                case 3:
-                    verificaStatoMezzo(scanner, mezzoDAO, Tipo_mezzo.AUTOBUS);
-                    break;
-                case 4:
-                    return;
-                default:
-                    System.out.println("Scelta non valida. Riprova.");
-            }
-            }catch (InputMismatchException e) {
+                switch (scelta) {
+                    case 1:
+                        mostraListaMezzi(mezzoDAO, Tipo_mezzo.AUTOBUS);
+                        break;
+                    case 2:
+                        trovaMezzoPerId(scanner, mezzoDAO, Tipo_mezzo.AUTOBUS);
+                        break;
+                    case 3:
+                        verificaStatoMezzo(scanner, mezzoDAO, Tipo_mezzo.AUTOBUS);
+                        break;
+                    case 4:
+                        return;
+                    default:
+                        System.out.println("Scelta non valida. Riprova.");
+                }
+            } catch (InputMismatchException e) {
                 System.out.println("Errore: Inserisci un numero valido.");
                 scanner.nextLine();
             }
@@ -449,29 +449,29 @@ public class Application {
 
 
             System.out.println("Gestione Tram:");
-            System.out.println("1 - Lista tram");
-            System.out.println("2 - Trova tram per id");
-            System.out.println("3 - Verifica stato tram (attivo/in manutenzione)");
-            System.out.println("4 - Torna indietro");
-            int scelta = scanner.nextInt();
-            scanner.nextLine();
+                System.out.println("1 - Lista tram");
+                System.out.println("2 - Trova tram per id");
+                System.out.println("3 - Verifica stato tram (attivo/in manutenzione)");
+                System.out.println("4 - Torna indietro");
+                int scelta = scanner.nextInt();
+                scanner.nextLine();
 
-            switch (scelta) {
-                case 1:
-                    mostraListaMezzi(mezzoDAO, Tipo_mezzo.TRAM);
-                    break;
-                case 2:
-                    trovaMezzoPerId(scanner, mezzoDAO, Tipo_mezzo.TRAM);
-                    break;
-                case 3:
-                    verificaStatoMezzo(scanner, mezzoDAO, Tipo_mezzo.TRAM);
-                    break;
-                case 4:
-                    return;
-                default:
-                    System.out.println("Scelta non valida. Riprova.");
-            }
-            }catch (InputMismatchException e) {
+                switch (scelta) {
+                    case 1:
+                        mostraListaMezzi(mezzoDAO, Tipo_mezzo.TRAM);
+                        break;
+                    case 2:
+                        trovaMezzoPerId(scanner, mezzoDAO, Tipo_mezzo.TRAM);
+                        break;
+                    case 3:
+                        verificaStatoMezzo(scanner, mezzoDAO, Tipo_mezzo.TRAM);
+                        break;
+                    case 4:
+                        return;
+                    default:
+                        System.out.println("Scelta non valida. Riprova.");
+                }
+            } catch (InputMismatchException e) {
                 System.out.println("Errore: Inserisci un numero valido.");
                 scanner.nextLine();
             }
