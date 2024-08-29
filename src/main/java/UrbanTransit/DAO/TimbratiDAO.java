@@ -3,8 +3,10 @@ package UrbanTransit.DAO;
 import UrbanTransit.entities.Timbrati;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 public class TimbratiDAO {
@@ -67,5 +69,11 @@ public class TimbratiDAO {
             }
             e.printStackTrace();
         }
+    }
+
+    public List<Timbrati> trovaBigliettiVidimatiPerMezzo(UUID mezzoId) {
+        TypedQuery<Timbrati> query = entityManager.createQuery("SELECT t FROM Timbrati t WHERE t.mezzo.id = :mezzoId", Timbrati.class);
+        query.setParameter("mezzoId", mezzoId);
+        return query.getResultList();
     }
 }

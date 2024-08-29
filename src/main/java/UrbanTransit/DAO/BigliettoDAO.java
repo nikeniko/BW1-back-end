@@ -96,4 +96,26 @@ public class BigliettoDAO {
         return query.getResultList();
     }
 
+    public void annullaBiglietto(UUID bigliettoId) {
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            Biglietto biglietto = em.find(Biglietto.class, bigliettoId);
+            if (biglietto != null) {
+                biglietto.setValido(false);
+                em.merge(biglietto);
+                System.out.println("Biglietto con ID: " + bigliettoId + " annullato con successo.");
+            } else {
+                System.out.println("Biglietto con ID: " + bigliettoId + " non trovato.");
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
+    }
+
+
 }

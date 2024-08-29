@@ -33,6 +33,7 @@ public class Application {
         TrattaDAO trattaDAO = new TrattaDAO(em);
         PercorrenzaDAO percorrenzaDAO = new PercorrenzaDAO(em);
         StatoDAO statoDAO = new StatoDAO(em);
+        TimbratiDAO timbratiDAO = new TimbratiDAO(em);
 
         Scanner scanner = new Scanner(System.in);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -46,10 +47,10 @@ public class Application {
 
             switch (scelta) {
                 case 1:
-                    gestisciMenuUtente(scanner, formatter, utenteDAO, tesseraDAO, abbonamentoDAO, bigliettoDAO, distributoriDAO, rivenditoriDAO);
+                    gestisciMenuUtente(scanner, formatter, utenteDAO, tesseraDAO, abbonamentoDAO, bigliettoDAO, distributoriDAO, rivenditoriDAO, mezzoDAO, timbratiDAO);
                     break;
                 case 2:
-                    gestisciMenuAmministratore(scanner, formatter, utenteDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, abbonamentoDAO, bigliettoDAO, mezzoDAO, trattaDAO, percorrenzaDAO, statoDAO);
+                    gestisciMenuAmministratore(scanner, formatter, utenteDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, abbonamentoDAO, bigliettoDAO, mezzoDAO, trattaDAO, percorrenzaDAO, statoDAO, timbratiDAO);
                     break;
                 default:
                     System.out.println("Scelta non valida. Riprova.");
@@ -57,7 +58,7 @@ public class Application {
         }
     }
 
-    private static void gestisciMenuUtente(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO, TesseraDAO tesseraDAO, AbbonamentoDAO abbonamentoDAO, BigliettoDAO bigliettoDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO) {
+    private static void gestisciMenuUtente(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO, TesseraDAO tesseraDAO, AbbonamentoDAO abbonamentoDAO, BigliettoDAO bigliettoDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, MezziDAO mezzoDAO, TimbratiDAO timbratiDAO) {
         while (true) {
             System.out.println("Cosa vuoi fare oggi?");
             System.out.println("1. Registrati");
@@ -65,7 +66,8 @@ public class Application {
             System.out.println("3. Elimina Profilo");
             System.out.println("4. Ottieni una tessera UrbanTransit");
             System.out.println("5. Compra un biglietto o abbonamento");
-            System.out.println("6. Torna al menù precedente");
+            System.out.println("6. Vidima biglietto");
+            System.out.println("7. Torna al menù precedente");
             int scelta = scanner.nextInt();
             scanner.nextLine();
 
@@ -86,6 +88,8 @@ public class Application {
                     compraBigliettoOAbbonamento(scanner, formatter, abbonamentoDAO, bigliettoDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, utenteDAO);
                     break;
                 case 6:
+                    vidimaBiglietto(scanner, bigliettoDAO, mezzoDAO, tesseraDAO, utenteDAO, timbratiDAO);
+                case 7:
                     return;
                 default:
                     System.out.println("Scelta non valida. Riprova.");
@@ -94,7 +98,7 @@ public class Application {
         }
     }
 
-    private static void gestisciMenuAmministratore(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, AbbonamentoDAO abbonamentoDAO, BigliettoDAO bigliettoDAO, MezziDAO mezzoDAO, TrattaDAO trattaDAO, PercorrenzaDAO percorrenzaDAO, StatoDAO statoDAO) {
+    private static void gestisciMenuAmministratore(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, AbbonamentoDAO abbonamentoDAO, BigliettoDAO bigliettoDAO, MezziDAO mezzoDAO, TrattaDAO trattaDAO, PercorrenzaDAO percorrenzaDAO, StatoDAO statoDAO, TimbratiDAO timbratiDAO) {
         System.out.println("Inserisci la password amministratore:");
         String password = scanner.nextLine();
 
@@ -110,7 +114,8 @@ public class Application {
             System.out.println("3 - Gestione Distributori/Rivenditori");
             System.out.println("4 - Gestione Mezzi");
             System.out.println("5 - Gestione Tratte");
-            System.out.println("6 - Esci");
+            System.out.println("6 - Gestisci biglietti vidimati");
+            System.out.println("7 - Esci");
             int scelta = scanner.nextInt();
             scanner.nextLine();
 
@@ -131,6 +136,8 @@ public class Application {
                     gestisciTratte(scanner, trattaDAO, percorrenzaDAO);
                     break;
                 case 6:
+                    gestisciBigliettiVidimati(scanner, timbratiDAO, mezzoDAO);
+                case 7:
                     return;
                 default:
                     System.out.println("Scelta non valida. Riprova.");
@@ -351,8 +358,7 @@ public class Application {
             System.out.println("1 - Lista autobus");
             System.out.println("2 - Trova autobus per id");
             System.out.println("3 - Verifica stato autobus (attivo/in manutenzione)");
-            System.out.println("4 - Biglietti vidimati");
-            System.out.println("5 - Torna indietro");
+            System.out.println("4 - Torna indietro");
             int scelta = scanner.nextInt();
             scanner.nextLine();
 
@@ -367,9 +373,6 @@ public class Application {
                     verificaStatoMezzo(scanner, mezzoDAO, Tipo_mezzo.AUTOBUS);
                     break;
                 case 4:
-                    gestisciBigliettiVidimati(scanner, formatter, mezzoDAO, Tipo_mezzo.AUTOBUS);
-                    break;
-                case 5:
                     return;
                 default:
                     System.out.println("Scelta non valida. Riprova.");
@@ -383,8 +386,7 @@ public class Application {
             System.out.println("1 - Lista tram");
             System.out.println("2 - Trova tram per id");
             System.out.println("3 - Verifica stato tram (attivo/in manutenzione)");
-            System.out.println("4 - Biglietti vidimati");
-            System.out.println("5 - Torna indietro");
+            System.out.println("4 - Torna indietro");
             int scelta = scanner.nextInt();
             scanner.nextLine();
 
@@ -399,9 +401,6 @@ public class Application {
                     verificaStatoMezzo(scanner, mezzoDAO, Tipo_mezzo.TRAM);
                     break;
                 case 4:
-                    gestisciBigliettiVidimati(scanner, formatter, mezzoDAO, Tipo_mezzo.TRAM);
-                    break;
-                case 5:
                     return;
                 default:
                     System.out.println("Scelta non valida. Riprova.");
@@ -536,6 +535,8 @@ public class Application {
             System.out.println("ID: " + u.getId() + ", Nome: " + u.getNome() + ", Cognome: " + u.getCognome() + ", Data di nascita: " + u.getData_nascita());
         }
     }
+
+
 
     //METODI GESTIONE TESSERE
 
@@ -1076,6 +1077,40 @@ public class Application {
         }
     }
 
+    private static void vidimaBiglietto(Scanner scanner, BigliettoDAO bigliettoDAO, MezziDAO mezzoDAO, TesseraDAO tesseraDAO, UtenteDAO utenteDAO, TimbratiDAO timbratiDAO){
+        System.out.println("Inserisci l'ID del biglietto:");
+        String bigliettoIdStr = scanner.nextLine();
+        try {
+            UUID bigliettoId = UUID.fromString(bigliettoIdStr);
+            Biglietto biglietto = bigliettoDAO.getBigliettoById(bigliettoId);
+
+            if (biglietto == null){
+                System.out.println("Biglietto non trovato");
+                return;
+            }
+
+            System.out.println("Inserisci l'ID del mezzo:");
+            String mezzoIdStr = scanner.nextLine();
+            UUID mezzoId = UUID.fromString(mezzoIdStr);
+            Mezzi mezzo = mezzoDAO.getMezzoById(mezzoId);
+
+            if (mezzo == null) {
+                System.out.println("Mezzo non trovato.");
+                return;
+            }
+
+            Timbrati timbrato = new Timbrati(LocalDate.now(), mezzo, biglietto);
+            timbratiDAO.createTimbrati(timbrato);
+
+            bigliettoDAO.annullaBiglietto(bigliettoId);
+            System.out.println("Biglietto vidimato e annullato con successo!");
+
+        } catch (IllegalArgumentException e){
+            System.out.println("Formato UUID non valido.");
+
+        }
+    }
+
     //METODI GESTIONE MEZZI
 
     private static void aggiungiMezzo(MezziDAO mezziDAO, StatoDAO statoDAO, Scanner scanner, DateTimeFormatter formatter) {
@@ -1188,10 +1223,31 @@ public class Application {
     }
 
 
-    private static void gestisciBigliettiVidimati(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezziDAO, Tipo_mezzo tipo) {
+    private static void gestisciBigliettiVidimati(Scanner scanner, TimbratiDAO timbratiDAO, MezziDAO mezzoDAO) {
+        System.out.println("Inserisci l'ID del mezzo per visualizzare i biglietti vidimati:");
+        String mezzoIdStr = scanner.nextLine();
+        try {
+            UUID mezzoId = UUID.fromString(mezzoIdStr);
+            Mezzi mezzo = mezzoDAO.getMezzoById(mezzoId);
 
+            if (mezzo == null) {
+                System.out.println("Mezzo non trovato");
+                return;
+            }
 
+            List<Timbrati> bigliettiVidimati = timbratiDAO.trovaBigliettiVidimatiPerMezzo(mezzoId);
 
+            if (bigliettiVidimati.isEmpty()) {
+                System.out.println("Nessun biglietto vidimato per questo mezzo");
+            } else {
+                System.out.println("Biglietti vidimati per il mezzo con ID: " + mezzoId);
+                for (Timbrati timbrato : bigliettiVidimati) {
+                    System.out.println("ID Biglietto: " + timbrato.getBiglietto().getId() + ", Data Timbro: " + timbrato.getData_timbro());
+                }
+            }
+        } catch (IllegalArgumentException e){
+            System.out.println("Formato UUID non valido");
+        }
     }
 
     //METODI GESTIONE TRATTA
