@@ -12,6 +12,7 @@ import jakarta.persistence.Persistence;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.Random;
 
 
 
@@ -30,6 +31,7 @@ public class Application {
         TesseraDAO tesseraDAO = new TesseraDAO(em);
         MezziDAO mezziDAO = new MezziDAO(em);
         TrattaDAO trattaDAO = new TrattaDAO(em);
+        PercorrenzaDAO percorrenzaDAO = new PercorrenzaDAO(em);
 
         Scanner scanner = new Scanner(System.in);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -46,7 +48,7 @@ public class Application {
                     gestisciMenuUtente(scanner, formatter, utenteDAO, tesseraDAO, abbonamentoDAO, bigliettoDAO, distributoriDAO, rivenditoriDAO);
                     break;
                 case 2:
-                    gestisciMenuAmministratore(scanner, formatter, utenteDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, abbonamentoDAO, bigliettoDAO, mezziDAO, trattaDAO);
+                    gestisciMenuAmministratore(scanner, formatter, utenteDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, abbonamentoDAO, bigliettoDAO, mezziDAO, trattaDAO, percorrenzaDAO );
                     break;
                 default:
                     System.out.println("Scelta non valida. Riprova.");
@@ -91,7 +93,7 @@ public class Application {
         }
     }
 
-    private static void gestisciMenuAmministratore(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, AbbonamentoDAO abbonamentoDAO, BigliettoDAO bigliettoDAO, MezziDAO mezziDAO, TrattaDAO trattaDAO) {
+    private static void gestisciMenuAmministratore(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, AbbonamentoDAO abbonamentoDAO, BigliettoDAO bigliettoDAO, MezziDAO mezziDAO, TrattaDAO trattaDAO, PercorrenzaDAO percorrenzaDAO) {
         System.out.println("Inserisci la password amministratore:");
         String password = scanner.nextLine();
 
@@ -122,10 +124,10 @@ public class Application {
                     gestisciDistributoriERivenditori(scanner, formatter, distributoriDAO, rivenditoriDAO, abbonamentoDAO, bigliettoDAO);
                     break;
                 case 4:
-                    gestisciMezzi(scanner, formatter, mezziDAO);
+                    gestisciMezzi(scanner, formatter, mezziDAO, trattaDAO);
                     break;
                 case 5:
-                    gestisciTratte(scanner, trattaDAO);
+                    gestisciTratte(scanner, trattaDAO, percorrenzaDAO);
                     break;
                 case 6:
                     return;
@@ -311,13 +313,15 @@ public class Application {
         }
     }
 
-    private static void gestisciMezzi(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezziDAO) {
+    private static void gestisciMezzi(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezziDAO, TrattaDAO trattaDAO) {
         while (true) {
             System.out.println("Gestione Mezzi:");
             System.out.println("1 - Gestione autobus");
             System.out.println("2 - Gestione Tram");
-            System.out.println("3 - Parco mezzi");
-            System.out.println("4 - Torna al menu precedente");
+            System.out.println("3 - Aggiungi Mezzo");
+            System.out.println("4 - Parco mezzi");
+            System.out.println("5 - Calcola tempo di percorrenza effettivo giornaliero");
+            System.out.println("6 - Torna al menu precedente");
             int scelta = scanner.nextInt();
             scanner.nextLine();
 
@@ -329,9 +333,13 @@ public class Application {
                     gestisciTram(scanner, formatter, mezziDAO);
                     break;
                 case 3:
+                    aggiungiMezzo(scanner, mezziDAO, trattaDAO);
+                case 4:
                     mostraParcoMezzi(mezziDAO);
                     break;
-                case 4:
+                case 5:
+                    calcolaTempoPercorrenzaEffettivoGiornaliero(mezziDAO);
+                case 6:
                     return;
                 default:
                     System.out.println("Scelta non valida. Riprova.");
@@ -403,7 +411,7 @@ public class Application {
         }
     }
 
-    private static void gestisciTratte(Scanner scanner, TrattaDAO trattaDAO) {
+    private static void gestisciTratte(Scanner scanner, TrattaDAO trattaDAO, PercorrenzaDAO percorrenzaDAO) {
         while (true) {
             System.out.println("Gestione Tratte:");
             System.out.println("1 - Aggiungi tratta");
@@ -425,7 +433,7 @@ public class Application {
                     eliminaTratta(scanner, trattaDAO);
                     break;
                 case 4:
-                    listaTratte(trattaDAO);
+                    listaTratte(trattaDAO, percorrenzaDAO);
                     break;
                 case 5:
                     return;
@@ -1063,6 +1071,10 @@ public class Application {
 
     //METODI GESTIONE MEZZI
 
+    private static void aggiungiMezzo( Scanner scanner, MezziDAO mezziDAO, TrattaDAO trattaDAO){
+
+    }
+
     private static void mostraParcoMezzi(MezziDAO mezziDAO) {
 
     }
@@ -1079,6 +1091,11 @@ public class Application {
 
     }
 
+    private static void calcolaTempoPercorrenzaEffettivoGiornaliero(MezziDAO mezziDAO) {
+        
+    }
+
+
     private static void gestisciBigliettiVidimati(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezziDAO, Tipo_mezzo tipo) {
 
     }
@@ -1086,7 +1103,17 @@ public class Application {
     //METODI GESTIONE TRATTA
 
     private static void aggiungiTratta(Scanner scanner, TrattaDAO trattaDAO) {
+        System.out.println("Inserisci zona di partenza:");
+        String zonaPartenza = scanner.nextLine();
+        System.out.println("Inserisci capolinea:");
+        String capolinea = scanner.nextLine();
+        System.out.println("Inserisci tempo di percorrenza previsto (in minuti):");
+        int tempoPercorrenzaPrevisto = scanner.nextInt();
+        scanner.nextLine();
 
+        Tratta nuovaTratta = new Tratta(zonaPartenza, capolinea, tempoPercorrenzaPrevisto);
+        trattaDAO.createTratta(nuovaTratta);
+        System.out.println("Tratta aggiunta con successo! ID: " + nuovaTratta.getId());
     }
 
     private static void modificaTratta(Scanner scanner, TrattaDAO trattaDAO) {
@@ -1094,11 +1121,31 @@ public class Application {
     }
 
     private static void eliminaTratta(Scanner scanner, TrattaDAO trattaDAO) {
+        System.out.println("Inserisci l'ID della tratta da eliminare:");
+        String idStr = scanner.nextLine();
+        try {
+            UUID id = UUID.fromString(idStr);
+            Tratta tratta = trattaDAO.getTrattaById(id);
 
+            if (tratta != null) {
+                trattaDAO.deleteTratta(tratta.getId());
+                System.out.println("Tratta eliminata con successo!");
+            } else {
+                System.out.println("Tratta non trovata.");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Formato UUID non valido.");
+        }
     }
 
-    private static void listaTratte(TrattaDAO trattaDAO) {
-        
+    private static void listaTratte(TrattaDAO trattaDAO, PercorrenzaDAO percorrenzaDAO) {
+        List<Tratta> tratte = trattaDAO.trovaTutteTratte();
+        System.out.println("Lista delle tratte:");
+        for (Tratta tratta : tratte) {
+            System.out.println("ID: " + tratta.getId() + ", Zona di Partenza: " + tratta.getZona_partenza() +
+                    ", Capolinea: " + tratta.getCapolinea() +
+                    ", Tempo di Percorrenza Previsto: " + tratta.getTempo_percorrenza() + " minuti" + (tratta.getPercorrenza() !=null ? ", Tempo di Percorrenza Effettivo: " + tratta.getPercorrenza().getTempo_effettivo() + " minuti" : ""));
+        }
     }
 
 

@@ -1,11 +1,11 @@
 package UrbanTransit.DAO;
 
 import UrbanTransit.entities.Tratta;
-import UrbanTransit.entities.Utente;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
 
-import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 public class TrattaDAO {
@@ -30,7 +30,7 @@ public class TrattaDAO {
         }
     }
 
-    public Tratta getTrattaById(Long id) {
+    public Tratta getTrattaById(UUID id) {
         return entityManager.find(Tratta.class, id);
     }
 
@@ -71,4 +71,13 @@ public class TrattaDAO {
             e.printStackTrace();
         }
     }
+
+    // Ottieni tutte le tratte
+    public List<Tratta> trovaTutteTratte() {
+        TypedQuery<Tratta> query = entityManager.createQuery("SELECT t FROM Tratta t", Tratta.class);
+        return query.getResultList();
+    }
+
+
 }
+

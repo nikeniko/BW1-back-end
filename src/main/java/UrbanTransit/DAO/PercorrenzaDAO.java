@@ -69,4 +69,5 @@ public class PercorrenzaDAO {
             e.printStackTrace();
         }
     }
+
 }

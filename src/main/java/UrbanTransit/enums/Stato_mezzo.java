@@ -4,3 +4,6 @@ public enum Stato_mezzo {
     IN_SERVIZIO,
     MANUTENZIONE
 }
+
+
+

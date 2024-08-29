@@ -32,6 +32,7 @@ public class Mezzi {
     private Timbrati timbrati;
 
 
+
     public Mezzi() {
     }
 
