@@ -27,10 +27,10 @@ public class Tessera {
     @OneToOne
     private Utente utente;
 
-    @OneToMany(mappedBy = "tessera")
+    @OneToMany(mappedBy = "tessera", cascade = CascadeType.ALL)
     private List<Abbonamento> abbonamenti;
 
-    @OneToMany(mappedBy = "tessera")
+    @OneToMany(mappedBy = "tessera", cascade = CascadeType.ALL)
     private List<Biglietto> biglietti;
 
 

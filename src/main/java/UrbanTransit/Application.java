@@ -4,6 +4,7 @@ import UrbanTransit.DAO.*;
 import UrbanTransit.entities.*;
 import UrbanTransit.enums.Periodicita_abbonamento;
 import UrbanTransit.enums.Stato_Distributori;
+import UrbanTransit.enums.Stato_mezzo;
 import UrbanTransit.enums.Tipo_mezzo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -12,7 +13,6 @@ import jakarta.persistence.Persistence;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-
 
 
 public class Application {
@@ -26,11 +26,9 @@ public class Application {
         DistributoriDAO distributoriDAO = new DistributoriDAO(em);
         RivenditoriDAO rivenditoriDAO = new RivenditoriDAO(em);
         AbbonamentoDAO abbonamentoDAO = new AbbonamentoDAO(em);
-        BigliettoDAO bigliettoDAO = new BigliettoDAO(em);
         TesseraDAO tesseraDAO = new TesseraDAO(em);
-        MezziDAO mezziDAO = new MezziDAO(em);
-        TrattaDAO trattaDAO = new TrattaDAO(em);
-        PercorrenzaDAO percorrenzaDAO = new PercorrenzaDAO(em);
+        MezziDAO mezzoDAO = new MezziDAO(em);
+        StatoDAO statoDAO = new StatoDAO(em);
 
         Scanner scanner = new Scanner(System.in);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -44,10 +42,10 @@ public class Application {
 
             switch (scelta) {
                 case 1:
-                    gestisciMenuUtente(scanner, formatter, utenteDAO, tesseraDAO, abbonamentoDAO, bigliettoDAO, distributoriDAO, rivenditoriDAO);
+                    gestisciMenuUtente(scanner, formatter, utenteDAO, tesseraDAO, abbonamentoDAO, distributoriDAO, rivenditoriDAO);
                     break;
                 case 2:
-                    gestisciMenuAmministratore(scanner, formatter, utenteDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, abbonamentoDAO, bigliettoDAO, mezziDAO, trattaDAO, percorrenzaDAO);
+                    gestisciMenuAmministratore(scanner, formatter, utenteDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, abbonamentoDAO, mezzoDAO, statoDAO);
                     break;
                 default:
                     System.out.println("Scelta non valida. Riprova.");
@@ -55,7 +53,7 @@ public class Application {
         }
     }
 
-    private static void gestisciMenuUtente(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO, TesseraDAO tesseraDAO, AbbonamentoDAO abbonamentoDAO, BigliettoDAO bigliettoDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO) {
+    private static void gestisciMenuUtente(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO, TesseraDAO tesseraDAO, AbbonamentoDAO abbonamentoDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO) {
         while (true) {
             System.out.println("Cosa vuoi fare oggi?");
             System.out.println("1. Registrati");
@@ -81,7 +79,7 @@ public class Application {
                     creaNuovaTessera(scanner, formatter, tesseraDAO, utenteDAO);
                     break;
                 case 5:
-                    compraBigliettoOAbbonamento(scanner, formatter, abbonamentoDAO, bigliettoDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, utenteDAO);
+                    compraBigliettoOAbbonamento(scanner, formatter, abbonamentoDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, utenteDAO);
                     break;
                 case 6:
                     return;
@@ -92,7 +90,7 @@ public class Application {
         }
     }
 
-    private static void gestisciMenuAmministratore(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, AbbonamentoDAO abbonamentoDAO, BigliettoDAO bigliettoDAO, MezziDAO mezziDAO, TrattaDAO trattaDAO, PercorrenzaDAO percorrenzaDAO) {
+    private static void gestisciMenuAmministratore(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, AbbonamentoDAO abbonamentoDAO, MezziDAO mezzoDAO, StatoDAO statoDAO) {
         System.out.println("Inserisci la password amministratore:");
         String password = scanner.nextLine();
 
@@ -120,13 +118,13 @@ public class Application {
                     gestisciTessere(scanner, formatter, tesseraDAO);
                     break;
                 case 3:
-                    gestisciDistributoriERivenditori(scanner, formatter, distributoriDAO, rivenditoriDAO, abbonamentoDAO, bigliettoDAO);
+                    gestisciDistributoriERivenditori(scanner, distributoriDAO, rivenditoriDAO, abbonamentoDAO);
                     break;
                 case 4:
-                    gestisciMezzi(scanner, formatter, mezziDAO);
+                    gestisciMezzi(scanner, formatter, mezzoDAO, statoDAO);
                     break;
                 case 5:
-                    gestisciTratte(scanner, trattaDAO, percorrenzaDAO);
+                    System.out.println("Funzione non ancora disponibile.");
                     break;
                 case 6:
                     return;
@@ -200,7 +198,7 @@ public class Application {
         }
     }
 
-    private static void gestisciDistributoriERivenditori(Scanner scanner, DateTimeFormatter formatter, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, AbbonamentoDAO abbonamentoDAO, BigliettoDAO bigliettoDAO) {
+    private static void gestisciDistributoriERivenditori(Scanner scanner, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, AbbonamentoDAO abbonamentoDAO) {
         while (true) {
             System.out.println("Gestione Distributori/Rivenditori:");
             System.out.println("1 - Gestione Distributori");
@@ -211,10 +209,10 @@ public class Application {
 
             switch (scelta) {
                 case 1:
-                    gestisciDistributori(scanner, formatter, distributoriDAO, abbonamentoDAO);
+                    gestisciDistributori(scanner, distributoriDAO, abbonamentoDAO);
                     break;
                 case 2:
-                    gestisciRivenditori(scanner, formatter, rivenditoriDAO, abbonamentoDAO);
+                    gestisciRivenditori(scanner, rivenditoriDAO, abbonamentoDAO);
                     break;
                 case 3:
                     return;
@@ -224,7 +222,8 @@ public class Application {
         }
     }
 
-    private static void gestisciDistributori(Scanner scanner, DateTimeFormatter formatter, DistributoriDAO distributoriDAO, AbbonamentoDAO abbonamentoDAO) {
+
+    private static void gestisciDistributori(Scanner scanner, DistributoriDAO distributoriDAO, AbbonamentoDAO abbonamentoDAO) {
         while (true) {
             System.out.println("Gestione Distributori:");
             System.out.println("1 - Elenco Distributori");
@@ -255,10 +254,10 @@ public class Application {
                     cercaDistributorePerId(scanner, distributoriDAO);
                     break;
                 case 6:
-                    ottieniBigliettiEmessiDaDistributore(scanner, formatter, distributoriDAO);
+                    ottieniBigliettiEmessiDaDistributore(scanner, distributoriDAO);
                     break;
                 case 7:
-                    ottieniAbbonamentiEmessiDaDistributore(scanner, formatter, abbonamentoDAO);
+                    ottieniAbbonamentiEmessiDaDistributore(scanner, abbonamentoDAO);
                     break;
                 case 8:
                     return;
@@ -268,7 +267,7 @@ public class Application {
         }
     }
 
-    private static void gestisciRivenditori(Scanner scanner, DateTimeFormatter formatter, RivenditoriDAO rivenditoriDAO, AbbonamentoDAO abbonamentoDAO) {
+    private static void gestisciRivenditori(Scanner scanner, RivenditoriDAO rivenditoriDAO, AbbonamentoDAO abbonamentoDAO) {
         while (true) {
             System.out.println("Gestione Rivenditori:");
             System.out.println("1 - Elenco Rivenditori");
@@ -299,10 +298,10 @@ public class Application {
                     cercaRivenditorePerId(scanner, rivenditoriDAO);
                     break;
                 case 6:
-                    ottieniBigliettiEmessiDaRivenditore(scanner, formatter, rivenditoriDAO);
+                    ottieniBigliettiEmessiDaRivenditore(scanner, rivenditoriDAO);
                     break;
                 case 7:
-                    ottieniAbbonamentiEmessiDaRivenditore(scanner, formatter, abbonamentoDAO);
+                    ottieniAbbonamentiEmessiDaRivenditore(scanner, abbonamentoDAO);
                     break;
                 case 8:
                     return;
@@ -312,27 +311,31 @@ public class Application {
         }
     }
 
-    private static void gestisciMezzi(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezziDAO) {
+    private static void gestisciMezzi(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezzoDAO, StatoDAO statoDAO) {
         while (true) {
             System.out.println("Gestione Mezzi:");
             System.out.println("1 - Gestione autobus");
             System.out.println("2 - Gestione Tram");
             System.out.println("3 - Parco mezzi");
-            System.out.println("4 - Torna al menu precedente");
+            System.out.println("4 - Aggiungi mezzo");
+            System.out.println("5 - Torna al menu precedente");
             int scelta = scanner.nextInt();
             scanner.nextLine();
 
             switch (scelta) {
                 case 1:
-                    gestisciAutobus(scanner, formatter, mezziDAO);
+                    gestisciAutobus(scanner, formatter, mezzoDAO);
                     break;
                 case 2:
-                    gestisciTram(scanner, formatter, mezziDAO);
+                    gestisciTram(scanner, formatter, mezzoDAO);
                     break;
                 case 3:
-                    mostraParcoMezzi(mezziDAO);
+                    mostraParcoMezzi(mezzoDAO);
                     break;
                 case 4:
+                    aggiungiMezzo(mezzoDAO, statoDAO, scanner, formatter);
+                    break;
+                case 5:
                     return;
                 default:
                     System.out.println("Scelta non valida. Riprova.");
@@ -395,38 +398,6 @@ public class Application {
                     break;
                 case 4:
                     gestisciBigliettiVidimati(scanner, formatter, mezziDAO, Tipo_mezzo.TRAM);
-                    break;
-                case 5:
-                    return;
-                default:
-                    System.out.println("Scelta non valida. Riprova.");
-            }
-        }
-    }
-
-    private static void gestisciTratte(Scanner scanner, TrattaDAO trattaDAO, PercorrenzaDAO percorrenzaDAO) {
-        while (true) {
-            System.out.println("Gestione Tratte:");
-            System.out.println("1 - Aggiungi tratta");
-            System.out.println("2 - Modifica tratta");
-            System.out.println("3 - Elimina tratta");
-            System.out.println("4 - Lista tratte");
-            System.out.println("5 - Torna indietro");
-            int scelta = scanner.nextInt();
-            scanner.nextLine();
-
-            switch (scelta) {
-                case 1:
-                    aggiungiTratta(scanner, trattaDAO);
-                    break;
-                case 2:
-                    modificaTratta(scanner, trattaDAO);
-                    break;
-                case 3:
-                    eliminaTratta(scanner, trattaDAO);
-                    break;
-                case 4:
-                    listaTratte(trattaDAO, percorrenzaDAO);
                     break;
                 case 5:
                     return;
@@ -534,37 +505,6 @@ public class Application {
 
     //METODI GESTIONE TESSERE
 
-    private static Tessera creaNuovaTessera(Scanner scanner, DateTimeFormatter formatter, TesseraDAO tesseraDAO, UtenteDAO utenteDAO) {
-        System.out.println("Inserire il proprio ID utente: ");
-        String idUtente = scanner.nextLine();
-        Utente utenteTrovato = utenteDAO.trovaUtentePerId(UUID.fromString(idUtente));
-
-        LocalDate Today = LocalDate.now();
-
-        if (utenteTrovato.getTessera() != null) {
-            LocalDate data_sca = utenteTrovato.getTessera().getData_scadenza();
-            if (data_sca.isBefore(Today)) {
-                System.out.println("La tessera è scaduta.");
-            } else if (data_sca.equals(Today)) {
-                System.out.println("La tessera scade oggi");
-            } else {
-                System.out.println("La tessera è presente e non è ancora scaduta.\n Scade il " + data_sca.format(formatter) + "\n\n");
-            }
-
-            return utenteTrovato.getTessera();
-        } else {
-            System.out.println("Creazione nuova tessera:");
-
-            Tessera nuovaTessera = new Tessera(Today,Today.plusYears(1),true,utenteTrovato);
-            utenteTrovato.setTessera(nuovaTessera);
-            utenteDAO.aggiornaUtente(utenteTrovato);
-            System.out.println("Tessera associata con successo all'utente: " + utenteTrovato.getNome() + " " + utenteTrovato.getCognome() + "\ncon ID: " + utenteTrovato.getId());
-            System.out.println("tessera ID " + utenteTrovato.getTessera().getId() + "\n\n");
-
-            return nuovaTessera;
-        }
-    }
-
     private static void ricercaTessera(Scanner scanner, TesseraDAO tesseraDAO) {
         System.out.println("Inserisci l'ID della tessera:");
         String idStr = scanner.nextLine();
@@ -604,15 +544,6 @@ public class Application {
                 System.out.println("Inserisci nuova data di inizio tessera (dd/MM/yyyy) (attuale: " + tessera.getData_inizio().format(formatter) + "):");
                 String nuovaDataInizioStr = scanner.nextLine();
                 LocalDate nuovaDataInizio = LocalDate.parse(nuovaDataInizioStr, formatter);
-
-                LocalDate unAnnoFa = LocalDate.now().minusYears(1);
-                if (nuovaDataInizio.isBefore(unAnnoFa)){
-                    tessera.setStato_tessera(false);
-                    System.out.println("La tessera è scaduta. Contatta il rivenditore più vicino");
-                } else {
-                    tessera.setStato_tessera(true);
-                }
-
                 tessera.setData_inizio(nuovaDataInizio);
                 tessera.setData_scadenza(nuovaDataInizio.plusYears(1));
 
@@ -659,11 +590,11 @@ public class Application {
         String indirizzo = scanner.nextLine();
         System.out.println("Inserisci lo stato del distributore (ATTIVO/FUORI_SERVIZIO):");
         String stato = scanner.nextLine();
-        Stato_Distributori statoDistributori = Stato_Distributori.valueOf(stato.toUpperCase());
+        Stato_Distributori statoDistribrutori = Stato_Distributori.valueOf(stato.toUpperCase());
 
         Distributori nuovoDistributore = new Distributori();
         nuovoDistributore.setIndirizzo(indirizzo);
-        nuovoDistributore.setStato_distribrutori(statoDistributori);
+        nuovoDistributore.setStato_distribrutori(statoDistribrutori);
 
         distributoriDAO.salvaDistributore(nuovoDistributore);
         System.out.println("Distributore aggiunto con successo! ID: " + nuovoDistributore.getId());
@@ -683,8 +614,8 @@ public class Application {
 
                 System.out.println("Inserisci nuovo stato (attuale: " + distributore.getStato_distribrutori() + "):");
                 String nuovoStato = scanner.nextLine();
-                Stato_Distributori statoDistributori = Stato_Distributori.valueOf(nuovoStato.toUpperCase());
-                distributore.setStato_distribrutori(statoDistributori);
+                Stato_Distributori statoDistribrutori = Stato_Distributori.valueOf(nuovoStato.toUpperCase());
+                distributore.setStato_distribrutori(statoDistribrutori);
 
                 distributoriDAO.aggiornaDistributore(distributore);
                 System.out.println("Distributore aggiornato con successo!");
@@ -732,7 +663,7 @@ public class Application {
         }
     }
 
-    private static void ottieniBigliettiEmessiDaDistributore(Scanner scanner, DateTimeFormatter formatter, DistributoriDAO distributoriDAO) {
+    private static void ottieniBigliettiEmessiDaDistributore(Scanner scanner, DistributoriDAO distributoriDAO) {
         System.out.println("Inserisci l'ID del distributore:");
         String idStr = scanner.nextLine();
         try {
@@ -742,11 +673,11 @@ public class Application {
             if (distributore != null) {
                 System.out.println("Inserisci data di inizio (dd/MM/yyyy):");
                 String dataInizioStr = scanner.nextLine();
-                LocalDate dataInizio = LocalDate.parse(dataInizioStr, formatter);
+                LocalDate dataInizio = LocalDate.parse(dataInizioStr);
 
                 System.out.println("Inserisci data di fine (dd/MM/yyyy):");
                 String dataFineStr = scanner.nextLine();
-                LocalDate dataFine = LocalDate.parse(dataFineStr, formatter);
+                LocalDate dataFine = LocalDate.parse(dataFineStr);
 
                 List<Biglietto> biglietti = distributoriDAO.trovaBigliettiEmessi(id, dataInizio, dataFine);
                 System.out.println("Biglietti emessi dal distributore:");
@@ -761,18 +692,18 @@ public class Application {
         }
     }
 
-    private static void ottieniAbbonamentiEmessiDaDistributore(Scanner scanner, DateTimeFormatter formatter, AbbonamentoDAO abbonamentoDAO) {
+    private static void ottieniAbbonamentiEmessiDaDistributore(Scanner scanner, AbbonamentoDAO abbonamentoDAO) {
         System.out.println("Inserisci l'ID del distributore:");
         String idStr = scanner.nextLine();
         try {
             UUID id = UUID.fromString(idStr);
             System.out.println("Inserisci data di inizio (dd/MM/yyyy):");
             String dataInizioStr = scanner.nextLine();
-            LocalDate dataInizio = LocalDate.parse(dataInizioStr, formatter);
+            LocalDate dataInizio = LocalDate.parse(dataInizioStr);
 
             System.out.println("Inserisci data di fine (dd/MM/yyyy):");
             String dataFineStr = scanner.nextLine();
-            LocalDate dataFine = LocalDate.parse(dataFineStr, formatter);
+            LocalDate dataFine = LocalDate.parse(dataFineStr);
 
             List<Abbonamento> abbonamenti = abbonamentoDAO.trovaAbbonamentiEmessiDaRivenditore(id, dataInizio, dataFine);
             System.out.println("Abbonamenti emessi dal distributore:");
@@ -869,7 +800,7 @@ public class Application {
         }
     }
 
-    private static void ottieniBigliettiEmessiDaRivenditore(Scanner scanner, DateTimeFormatter formatter, RivenditoriDAO rivenditoriDAO) {
+    private static void ottieniBigliettiEmessiDaRivenditore(Scanner scanner, RivenditoriDAO rivenditoriDAO) {
         System.out.println("Inserisci l'ID del rivenditore:");
         String idStr = scanner.nextLine();
         try {
@@ -879,11 +810,11 @@ public class Application {
             if (rivenditore != null) {
                 System.out.println("Inserisci data di inizio (dd/MM/yyyy):");
                 String dataInizioStr = scanner.nextLine();
-                LocalDate dataInizio = LocalDate.parse(dataInizioStr, formatter);
+                LocalDate dataInizio = LocalDate.parse(dataInizioStr);
 
                 System.out.println("Inserisci data di fine (dd/MM/yyyy):");
                 String dataFineStr = scanner.nextLine();
-                LocalDate dataFine = LocalDate.parse(dataFineStr, formatter);
+                LocalDate dataFine = LocalDate.parse(dataFineStr);
 
                 List<Biglietto> biglietti = rivenditoriDAO.trovaBigliettiEmessi(id, dataInizio, dataFine);
                 System.out.println("Biglietti emessi dal rivenditore:");
@@ -898,18 +829,18 @@ public class Application {
         }
     }
 
-    private static void ottieniAbbonamentiEmessiDaRivenditore(Scanner scanner, DateTimeFormatter formatter, AbbonamentoDAO abbonamentoDAO) {
+    private static void ottieniAbbonamentiEmessiDaRivenditore(Scanner scanner, AbbonamentoDAO abbonamentoDAO) {
         System.out.println("Inserisci l'ID del rivenditore:");
         String idStr = scanner.nextLine();
         try {
             UUID id = UUID.fromString(idStr);
             System.out.println("Inserisci data di inizio (dd/MM/yyyy):");
             String dataInizioStr = scanner.nextLine();
-            LocalDate dataInizio = LocalDate.parse(dataInizioStr, formatter);
+            LocalDate dataInizio = LocalDate.parse(dataInizioStr);
 
             System.out.println("Inserisci data di fine (dd/MM/yyyy):");
             String dataFineStr = scanner.nextLine();
-            LocalDate dataFine = LocalDate.parse(dataFineStr, formatter);
+            LocalDate dataFine = LocalDate.parse(dataFineStr);
 
             List<Abbonamento> abbonamenti = abbonamentoDAO.trovaAbbonamentiEmessiDaRivenditore(id, dataInizio, dataFine);
             System.out.println("Abbonamenti emessi dal rivenditore:");
@@ -923,7 +854,7 @@ public class Application {
 
     //METODI DI ACQUISTO BIGLIETTO/ABBONAMENTO
 
-    private static void compraBigliettoOAbbonamento(Scanner scanner, DateTimeFormatter formatter, AbbonamentoDAO abbonamentoDAO, BigliettoDAO bigliettoDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, UtenteDAO utenteDAO) {
+    private static void compraBigliettoOAbbonamento(Scanner scanner, DateTimeFormatter formatter, AbbonamentoDAO abbonamentoDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, UtenteDAO utenteDAO) {
         System.out.println("Vuoi acquistare:");
         System.out.println("1 - Biglietto");
         System.out.println("2 - Abbonamento");
@@ -932,7 +863,7 @@ public class Application {
 
         switch (scelta) {
             case 1:
-                acquistaBiglietto(scanner, formatter, bigliettoDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, utenteDAO);
+                System.out.println("Funzione non ancora disponibile per i biglietti.");
                 break;
             case 2:
                 acquistaAbbonamento(scanner, formatter, abbonamentoDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, utenteDAO);
@@ -941,69 +872,6 @@ public class Application {
                 System.out.println("Scelta non valida. Riprova.");
         }
     }
-
-    private static void acquistaBiglietto(Scanner scanner, DateTimeFormatter formatter, BigliettoDAO bigliettoDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, UtenteDAO utenteDAO){
-        System.out.println("Sei in possesso di una tessera? (si/no)");
-        String haTessera = scanner.nextLine().trim().toLowerCase();
-        Tessera tessera = null;
-
-        if (haTessera.equals("si")) {
-            System.out.println("Inserisci l'ID della tessera:");
-            String tesseraIdStr = scanner.nextLine();
-            try {
-                UUID tesseraId = UUID.fromString(tesseraIdStr);
-                tessera = tesseraDAO.trovaTesseraPerId(tesseraId);
-
-                if (tessera == null) {
-                    System.out.println("Tessera non trovata. Creane una nuova.");
-                    tessera = creaNuovaTessera(scanner, formatter, tesseraDAO, utenteDAO);
-                }
-            } catch (IllegalArgumentException e) {
-                System.out.println("Formato UUID non valido.");
-                return;
-            }
-        } else {
-            tessera = creaNuovaTessera(scanner, formatter, tesseraDAO, utenteDAO);
-        }
-
-        System.out.println("Inserisci data di acquisto (dd/MM/yyyy):");
-        LocalDate dataInizio = LocalDate.parse(scanner.nextLine(), formatter);
-
-        System.out.println("Stai acquistando da un distributore o da un rivenditore?");
-        System.out.println("1 - Distributore");
-        System.out.println("2 - Rivenditore");
-        int sceltaEmittente = scanner.nextInt();
-        scanner.nextLine();
-
-        if (sceltaEmittente == 1) {
-            System.out.println("Inserisci ID del distributore:");
-            String distributoreId = scanner.nextLine();
-            Distributori distributore = distributoriDAO.trovaDistributorePerId(UUID.fromString(distributoreId));
-
-            if (distributore != null) {
-                Biglietto nuovoBiglietto = new Biglietto(dataInizio, tessera, distributore);
-                bigliettoDAO.createBiglietto(nuovoBiglietto);
-                System.out.println("Biglietto emesso da distributore aggiunto con successo! ID: " + nuovoBiglietto.getId());
-            } else {
-                System.out.println("Distributore non trovato.");
-            }
-        } else if (sceltaEmittente == 2) {
-            System.out.println("Inserisci ID del rivenditore:");
-            String rivenditoreId = scanner.nextLine();
-            Rivenditori rivenditore = rivenditoriDAO.trovaRivenditorePerId(UUID.fromString(rivenditoreId));
-
-            if (rivenditore != null) {
-                Biglietto nuovoBiglietto = new Biglietto(dataInizio, tessera, rivenditore);
-                bigliettoDAO.createBiglietto(nuovoBiglietto);
-                System.out.println("Abbonamento emesso da rivenditore aggiunto con successo! ID: " + nuovoBiglietto.getId());
-            } else {
-                System.out.println("Rivenditore non trovato.");
-            }
-        } else {
-            System.out.println("Scelta non valida.");
-        }
-    }
-
 
     private static void acquistaAbbonamento(Scanner scanner, DateTimeFormatter formatter, AbbonamentoDAO abbonamentoDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, UtenteDAO utenteDAO) {
         System.out.println("Sei in possesso di una tessera? (si/no)");
@@ -1071,106 +939,163 @@ public class Application {
         }
     }
 
-    //METODI GESTIONE MEZZI
+    private static Tessera creaNuovaTessera(Scanner scanner, DateTimeFormatter formatter, TesseraDAO tesseraDAO, UtenteDAO utenteDAO) {
+        System.out.println("Inserire il proprio ID utente: ");
+        String idUtente = scanner.nextLine();
+        Utente utenteTrovato = utenteDAO.trovaUtentePerId(UUID.fromString(idUtente));
 
-    private static void mostraParcoMezzi(MezziDAO mezziDAO) {
+        LocalDate Today = LocalDate.now();
+
+        if (utenteTrovato.getTessera() != null) {
+            LocalDate data_sca = utenteTrovato.getTessera().getData_scadenza();
+            if (data_sca.isBefore(Today)) {
+                System.out.println("La tessera è scaduta.");
+            } else if (data_sca.equals(Today)) {
+                System.out.println("La tessera scade oggi");
+            } else {
+                System.out.println("La tessera è presente e non è ancora scaduta.\n Scade il " + data_sca.format(formatter) + "\n\n");
+            }
+
+            return utenteTrovato.getTessera();
+        } else {
+            System.out.println("Creazione nuova tessera:");
+
+            Tessera nuovaTessera = new Tessera(Today, Today.plusYears(1), true, utenteTrovato);
+            utenteTrovato.setTessera(nuovaTessera);
+            utenteDAO.aggiornaUtente(utenteTrovato);
+            System.out.println("Tessera associata con successo all'utente: " + utenteTrovato.getNome() + " " + utenteTrovato.getCognome() + "\ncon ID: " + utenteTrovato.getId());
+            System.out.println("tessera ID " + utenteTrovato.getTessera().getId() + "\n\n");
+
+            return nuovaTessera;
+        }
+
 
     }
 
-    private static void mostraListaMezzi(MezziDAO mezziDAO, Tipo_mezzo tipo) {
 
+    //METODI GESTIONE MEZZI
+
+
+    private static void aggiungiMezzo(MezziDAO mezziDAO, StatoDAO statoDAO, Scanner scanner, DateTimeFormatter formatter) {
+        try {
+            System.out.println("Che tipo di mezzo è? [AUTOBUS, TRAM]");
+            String tipoMezzo = scanner.nextLine();
+
+            System.out.println("Qual è la capienza del mezzo? ");
+            int capienzaMezzo = Integer.parseInt(scanner.nextLine());
+
+            System.out.println("Quanti giri deve percorrere? ");
+            int giriMezzo = Integer.parseInt(scanner.nextLine());
+
+            System.out.println("Vuoi inserire uno stato al mezzo? [si/no]");
+            String risp = scanner.nextLine();
+
+            String statoMezzo = "";
+            LocalDate dataInizio = null;
+            LocalDate dataFine = null;
+
+
+            if (risp.equalsIgnoreCase("si")) {
+                System.out.println("Inserisci lo stato del mezzo: [SERVIZIO, MANUTENZIONE]");
+                statoMezzo = scanner.nextLine();
+
+                System.out.println("Inserire data di inizio: [gg/mm/aaaa]");
+                dataInizio = LocalDate.parse(scanner.nextLine(), formatter);
+
+                if (statoMezzo.equals("MANUTENZIONE")) dataFine = dataInizio.plusMonths(1);
+
+            }
+
+            Mezzi nuovoMezzo = new Mezzi(capienzaMezzo, Tipo_mezzo.valueOf(tipoMezzo), giriMezzo);
+            Stato nuovoStato = new Stato(Stato_mezzo.valueOf(statoMezzo), dataInizio, dataFine, nuovoMezzo);
+
+            nuovoMezzo.setStato(nuovoStato);
+
+            System.out.println(nuovoMezzo.getTipo_mezzo() + "è stato creato con successo");
+            mezziDAO.createMezzi(nuovoMezzo);
+
+            System.out.println("L'ID del mezzo sarà: " + nuovoMezzo.getId());
+            System.out.println("Stato del mezzo ha ID: " + nuovoStato.getId());
+
+        } catch (Exception e) {
+            System.out.println("Errore : " + e.getMessage());
+        }
+
+
+    }
+
+    private static void mostraParcoMezzi(MezziDAO mezziDAO) {
+        List<Mezzi> mezziList = mezziDAO.getAllMezzi();
+        if (mezziList.isEmpty()) {
+            System.out.println("Il parco mezzi è vuoto.");
+        } else {
+            System.out.println("Elenco completo dei mezzi:");
+            for (Mezzi mezzo : mezziList) {
+                System.out.println("ID: " + mezzo.getId() + ", Tipo: " + mezzo.getTipo_mezzo() + ", Capienza: " + mezzo.getCapienza() + ", Numero di giri: " + mezzo.getNum_giri());
+            }
+        }
+    }
+
+
+    private static void mostraListaMezzi(MezziDAO mezziDAO, Tipo_mezzo tipo) {
+        System.out.println("Lista degli autobus:\n\n" + mezziDAO.getMezziByTipo(tipo) + "\n");
     }
 
     private static void trovaMezzoPerId(Scanner scanner, MezziDAO mezziDAO, Tipo_mezzo tipo) {
 
+        try {
+            System.out.println("Inserire l'ID del mezzo da cercare: ");
+            String mezzoID = scanner.nextLine();
+
+            if (mezzoID == null || mezzoID.trim().isEmpty()) {
+                System.out.println("Errore: ID del mezzo non può essere vuoto.");
+                return;
+            }
+
+            Mezzi mezzoTrovato = mezziDAO.getMezzoById(UUID.fromString(mezzoID));
+
+            if (mezzoTrovato != null) {
+                System.out.println("Il mezzo è stato trovato\nID : " + mezzoTrovato.getId() + " Capienza dell'autobus: " + mezzoTrovato.getCapienza() + " Numero dei giri: " + mezzoTrovato.getNum_giri() + "\n\n");
+            } else {
+                System.out.println("Nessun mezzo trovato con l'ID fornito.");
+            }
+
+        } catch (Exception e) {
+            System.out.println("errore: " + e.getMessage());
+        }
+
     }
 
     private static void verificaStatoMezzo(Scanner scanner, MezziDAO mezziDAO, Tipo_mezzo tipo) {
+        System.out.println("Inserisci l'ID del mezzo per verificare lo stato: ");
+        String mezzoID = scanner.nextLine();
+
+        if (mezzoID == null || mezzoID.trim().isEmpty()) {
+            System.out.println("Errore: ID del mezzo non può essere vuoto.");
+            return;
+        }
+
+        Mezzi mezzoTrovato = mezziDAO.getMezzoById(UUID.fromString(mezzoID));
+
+        try {
+            System.out.println("Stato del mezzo con ID " + mezzoTrovato.getId() + ": " + mezzoTrovato.getStato().getStato_mezzo());
+        } catch (Exception e) {
+            System.out.println("Nessun mezzo trovato con l'ID fornito.");
+            System.out.println(e.getMessage());
+        }
+
+
 
     }
 
+
     private static void gestisciBigliettiVidimati(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezziDAO, Tipo_mezzo tipo) {
+
+
 
     }
 
     //METODI GESTIONE TRATTA
 
-    private static void aggiungiTratta(Scanner scanner, TrattaDAO trattaDAO) {
-        System.out.println("Inserisci zona di partenza:");
-        String zonaPartenza = scanner.nextLine();
-        System.out.println("Inserisci capolinea:");
-        String capolinea = scanner.nextLine();
-        System.out.println("Inserisci tempo di percorrenza previsto (in minuti):");
-        int tempoPercorrenzaPrevisto = scanner.nextInt();
-        scanner.nextLine();
 
-        Tratta nuovaTratta = new Tratta(zonaPartenza, capolinea, tempoPercorrenzaPrevisto);
-        trattaDAO.createTratta(nuovaTratta);
-        System.out.println("Tratta aggiunta con successo! ID: " + nuovaTratta.getId());
-    }
-
-    private static void modificaTratta(Scanner scanner, TrattaDAO trattaDAO) {
-        System.out.println("Inserisci l'ID della tratta da modificare:");
-        String idStr = scanner.nextLine();
-        try {
-            UUID id = UUID.fromString(idStr);
-            Tratta tratta = trattaDAO.getTrattaById(id);
-
-            if (tratta != null) {
-                System.out.println("Inserisci nuova zona di partenza (attuale: " + tratta.getZona_partenza() + "):");
-                String nuovaZonaPartenza = scanner.nextLine();
-                tratta.setZona_partenza(nuovaZonaPartenza);
-
-                System.out.println("Inserisci nuovo capolinea (attuale: " + tratta.getCapolinea() + "):");
-                String nuovoCapolinea = scanner.nextLine();
-                tratta.setCapolinea(nuovoCapolinea);
-
-                System.out.println("Inserisci nuovo tempo di percorrenza previsto (attuale: " + tratta.getTempo_percorrenza() + " minuti):");
-                int nuovoTempoPercorrenza = scanner.nextInt();
-                scanner.nextLine();
-                tratta.setTempo_percorrenza(nuovoTempoPercorrenza);
-
-                trattaDAO.updateTratta(id, nuovaZonaPartenza, nuovoCapolinea, nuovoTempoPercorrenza);
-                System.out.println("Tratta aggiornata con successo!");
-            } else {
-                System.out.println("Tratta non trovata.");
-            }
-        } catch (IllegalArgumentException e) {
-            System.out.println("Formato UUID non valido.");
-        }
-    }
-
-    private static void eliminaTratta(Scanner scanner, TrattaDAO trattaDAO) {
-        System.out.println("Inserisci l'ID della tratta da eliminare:");
-        String idStr = scanner.nextLine();
-        try {
-            UUID id = UUID.fromString(idStr);
-            Tratta tratta = trattaDAO.getTrattaById(id);
-
-            if (tratta != null) {
-                trattaDAO.deleteTratta(tratta.getId());
-                System.out.println("Tratta eliminata con successo!");
-            } else {
-                System.out.println("Tratta non trovata.");
-            }
-        } catch (IllegalArgumentException e) {
-            System.out.println("Formato UUID non valido.");
-        }
-    }
-
-    private static void listaTratte(TrattaDAO trattaDAO, PercorrenzaDAO percorrenzaDAO) {
-        List<Tratta> tratte = trattaDAO.trovaTutteTratte();
-        System.out.println("Lista delle tratte:");
-        for (Tratta tratta : tratte) {
-            System.out.println("ID: " + tratta.getId() + ", Zona di Partenza: " + tratta.getZona_partenza() +
-                    ", Capolinea: " + tratta.getCapolinea() +
-                    ", Tempo di Percorrenza Previsto: " + tratta.getTempo_percorrenza() + " minuti" + (tratta.getPercorrenza() !=null ? ", Tempo di Percorrenza Effettivo: " + tratta.getPercorrenza().getTempo_effettivo() + " minuti" : ""));
-        }
-    }
-
-
-
-
-    }
-
-
+}
