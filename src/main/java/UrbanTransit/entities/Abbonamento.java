@@ -34,9 +34,6 @@ public class Abbonamento {
     @ManyToOne
     private Tessera tessera;
 
-
-
-
     public Abbonamento() {
     }
 
@@ -45,6 +42,7 @@ public class Abbonamento {
         this.data_inizio = data_inizio;
         this.distributore = distributore;
         this.tessera = tessera;
+        this.rivenditore = null;
     }
 
 
@@ -53,6 +51,7 @@ public class Abbonamento {
         this.data_inizio = data_inizio;
         this.rivenditore = rivenditore;
         this.tessera = tessera;
+        this.distributore = null;
     }
 
     public UUID getId() {
