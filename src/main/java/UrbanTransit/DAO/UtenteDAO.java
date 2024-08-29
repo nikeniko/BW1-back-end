@@ -33,6 +33,7 @@ public class UtenteDAO {
         em.getTransaction().begin();
         em.merge(utente);
         em.getTransaction().commit();
+        System.out.println("utente aggiornato\n");
     }
 
     public void eliminaUtente(Utente utente){

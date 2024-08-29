@@ -82,7 +82,7 @@ public class Stato {
                 ", stato_mezzo=" + stato_mezzo +
                 ", data_inizio=" + data_inizio +
                 ", data_fine=" + data_fine +
-                ", mezzi=" + mezzo +
+                ", mezzo=" + mezzo +
                 '}';
     }
 }
