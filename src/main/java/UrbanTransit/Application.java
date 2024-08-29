@@ -529,7 +529,7 @@ public class Application {
         } else {
             System.out.println("Creazione nuova tessera:");
 
-            Tessera nuovaTessera = new Tessera(Today,Today.plusYears(1),true,utenteTrovato);
+            Tessera nuovaTessera = new Tessera(Today, Today.plusYears(1), true, utenteTrovato);
             utenteTrovato.setTessera(nuovaTessera);
             utenteDAO.aggiornaUtente(utenteTrovato);
             System.out.println("Tessera associata con successo all'utente: " + utenteTrovato.getNome() + " " + utenteTrovato.getCognome() + "\ncon ID: " + utenteTrovato.getId());
@@ -537,6 +537,7 @@ public class Application {
 
             return nuovaTessera;
         }
+
     }
 
     private static void ricercaTessera(Scanner scanner, TesseraDAO tesseraDAO) {
@@ -1044,38 +1045,6 @@ public class Application {
             System.out.println("Scelta non valida.");
         }
     }
-
-    private static Tessera creaNuovaTessera(Scanner scanner, DateTimeFormatter formatter, TesseraDAO tesseraDAO, UtenteDAO utenteDAO) {
-        System.out.println("Inserire il proprio ID utente: ");
-        String idUtente = scanner.nextLine();
-        Utente utenteTrovato = utenteDAO.trovaUtentePerId(UUID.fromString(idUtente));
-
-        LocalDate Today = LocalDate.now();
-
-        if (utenteTrovato.getTessera() != null) {
-            LocalDate data_sca = utenteTrovato.getTessera().getData_scadenza();
-            if (data_sca.isBefore(Today)) {
-                System.out.println("La tessera è scaduta.");
-            } else if (data_sca.equals(Today)) {
-                System.out.println("La tessera scade oggi");
-            } else {
-                System.out.println("La tessera è presente e non è ancora scaduta.\n Scade il " + data_sca.format(formatter) + "\n\n");
-            }
-
-            return utenteTrovato.getTessera();
-        } else {
-            System.out.println("Creazione nuova tessera:");
-
-            Tessera nuovaTessera = new Tessera(Today, Today.plusYears(1), true, utenteTrovato);
-            utenteTrovato.setTessera(nuovaTessera);
-            utenteDAO.aggiornaUtente(utenteTrovato);
-            System.out.println("Tessera associata con successo all'utente: " + utenteTrovato.getNome() + " " + utenteTrovato.getCognome() + "\ncon ID: " + utenteTrovato.getId());
-            System.out.println("tessera ID " + utenteTrovato.getTessera().getId() + "\n\n");
-
-            return nuovaTessera;
-        }
-
-}
     private static void aggiungiTratta(Scanner scanner, TrattaDAO trattaDAO) {
         System.out.println("Inserisci zona di partenza:");
         String zonaPartenza = scanner.nextLine();
