@@ -4,6 +4,7 @@ import UrbanTransit.DAO.*;
 import UrbanTransit.entities.*;
 import UrbanTransit.enums.Periodicita_abbonamento;
 import UrbanTransit.enums.Stato_Distributori;
+import UrbanTransit.enums.Stato_mezzo;
 import UrbanTransit.enums.Tipo_mezzo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -1073,23 +1074,120 @@ public class Application {
 
     //METODI GESTIONE MEZZI
 
-    private static void mostraParcoMezzi(MezziDAO mezziDAO) {
+    private static void createMezzi(MezziDAO mezziDAO, StatoDAO statoDAO, Scanner scanner, DateTimeFormatter formatter) {
+        try {
+            System.out.println("Che tipo di mezzo è? [AUTOBUS, TRAM]");
+            String tipoMezzo = scanner.nextLine();
+
+            System.out.println("Qual è la capienza del mezzo? ");
+            int capienzaMezzo = Integer.parseInt(scanner.nextLine());
+
+            System.out.println("Quanti giri deve percorrere? ");
+            int giriMezzo = Integer.parseInt(scanner.nextLine());
+
+            System.out.println("Vuoi inserire uno stato al mezzo? [si/no]");
+            String risp = scanner.nextLine();
+
+            String statoMezzo = "";
+            LocalDate dataInizio = null;
+            LocalDate dataFine = null;
+
+
+            if (risp.equalsIgnoreCase("si")) {
+                System.out.println("Inserisci lo stato del mezzo: [SERVIZIO, MANUTENZIONE]");
+                statoMezzo = scanner.nextLine();
+
+                System.out.println("Inserire data di inizio: [gg/mm/aaaa]");
+                dataInizio = LocalDate.parse(scanner.nextLine(), formatter);
+
+                if (statoMezzo.equals("MANUTENZIONE")) dataFine = dataInizio.plusMonths(1);
+
+            }
+
+            Mezzi nuovoMezzo = new Mezzi(capienzaMezzo, Tipo_mezzo.valueOf(tipoMezzo), giriMezzo);
+            Stato nuovoStato = new Stato(Stato_mezzo.valueOf(statoMezzo), dataInizio, dataFine, nuovoMezzo);
+
+            nuovoMezzo.setStato(nuovoStato);
+
+            System.out.println(nuovoMezzo.getTipo_mezzo() + "è stato creato con successo");
+            mezziDAO.createMezzi(nuovoMezzo);
+
+            System.out.println("L'ID del mezzo sarà: " + nuovoMezzo.getId());
+            System.out.println("Stato del mezzo ha ID: " + nuovoStato.getId());
+
+        } catch (Exception e) {
+            System.out.println("Errore : " + e.getMessage());
+        }
+
 
     }
 
-    private static void mostraListaMezzi(MezziDAO mezziDAO, Tipo_mezzo tipo) {
+    private static void mostraParcoMezzi(MezziDAO mezziDAO) {
+        List<Mezzi> mezziList = mezziDAO.trovaTuttiMezzi();
+        if (mezziList.isEmpty()) {
+            System.out.println("Il parco mezzi è vuoto.");
+        } else {
+            System.out.println("Elenco completo dei mezzi:");
+            for (Mezzi mezzo : mezziList) {
+                System.out.println("ID: " + mezzo.getId() + ", Tipo: " + mezzo.getTipo_mezzo() + ", Capienza: " + mezzo.getCapienza() + ", Numero di giri: " + mezzo.getNum_giri());
+            }
+        }
+    }
 
+
+    private static void mostraListaMezzi(MezziDAO mezziDAO, Tipo_mezzo tipo) {
+        System.out.println("Lista degli autobus:\n\n" + mezziDAO.trovaMezziPerTipo(tipo) + "\n");
     }
 
     private static void trovaMezzoPerId(Scanner scanner, MezziDAO mezziDAO, Tipo_mezzo tipo) {
 
+        try {
+            System.out.println("Inserire l'ID del mezzo da cercare: ");
+            String mezzoID = scanner.nextLine();
+
+            if (mezzoID == null || mezzoID.trim().isEmpty()) {
+                System.out.println("Errore: ID del mezzo non può essere vuoto.");
+                return;
+            }
+
+            Mezzi mezzoTrovato = mezziDAO.getMezzoById(UUID.fromString(mezzoID));
+
+            if (mezzoTrovato != null) {
+                System.out.println("Il mezzo è stato trovato\nID : " + mezzoTrovato.getId() + " Capienza dell'autobus: " + mezzoTrovato.getCapienza() + " Numero dei giri: " + mezzoTrovato.getNum_giri() + "\n\n");
+            } else {
+                System.out.println("Nessun mezzo trovato con l'ID fornito.");
+            }
+
+        } catch (Exception e) {
+            System.out.println("errore: " + e.getMessage());
+        }
+
     }
 
     private static void verificaStatoMezzo(Scanner scanner, MezziDAO mezziDAO, Tipo_mezzo tipo) {
+        System.out.println("Inserisci l'ID del mezzo per verificare lo stato: ");
+        String mezzoID = scanner.nextLine();
+
+        if (mezzoID == null || mezzoID.trim().isEmpty()) {
+            System.out.println("Errore: ID del mezzo non può essere vuoto.");
+            return;
+        }
+
+        Mezzi mezzoTrovato = mezziDAO.getMezzoById(UUID.fromString(mezzoID));
+
+        try {
+            System.out.println("Stato del mezzo con ID " + mezzoTrovato.getId() + ": " + mezzoTrovato.getStato().getStato_mezzo());
+        } catch (Exception e) {
+            System.out.println("Nessun mezzo trovato con l'ID fornito.");
+            System.out.println(e.getMessage());
+        }
 
     }
 
+
     private static void gestisciBigliettiVidimati(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezziDAO, Tipo_mezzo tipo) {
+
+
 
     }
 
