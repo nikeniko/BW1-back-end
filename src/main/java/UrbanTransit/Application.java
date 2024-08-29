@@ -55,6 +55,7 @@ public class Application {
 
     private static void gestisciMenuUtente(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO, TesseraDAO tesseraDAO, AbbonamentoDAO abbonamentoDAO, BigliettoDAO bigliettoDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO) {
         while (true) {
+            try {
             System.out.println("Cosa vuoi fare oggi?");
             System.out.println("1. Registrati");
             System.out.println("2. Modifica Profilo");
@@ -85,7 +86,11 @@ public class Application {
                     return;
                 default:
                     System.out.println("Scelta non valida. Riprova.");
-
+            }
+            
+            } catch (InputMismatchException e) {
+                System.out.println("Errore: Inserisci un numero valido.");
+                scanner.nextLine();
             }
         }
     }
