@@ -1126,7 +1126,7 @@ public class Application {
     }
 
     private static void mostraParcoMezzi(MezziDAO mezziDAO) {
-        List<Mezzi> mezziList = mezziDAO.trovaTuttiMezzi();
+        List<Mezzi> mezziList = mezziDAO.getAllMezzi();
         if (mezziList.isEmpty()) {
             System.out.println("Il parco mezzi è vuoto.");
         } else {
@@ -1139,7 +1139,7 @@ public class Application {
 
 
     private static void mostraListaMezzi(MezziDAO mezziDAO, Tipo_mezzo tipo) {
-        System.out.println("Lista degli autobus:\n\n" + mezziDAO.trovaMezziPerTipo(tipo) + "\n");
+        System.out.println("Lista degli autobus:\n\n" + mezziDAO.getMezziByTipo(tipo) + "\n");
     }
 
     private static void trovaMezzoPerId(Scanner scanner, MezziDAO mezziDAO, Tipo_mezzo tipo) {
