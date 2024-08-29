@@ -36,6 +36,7 @@ public class Application {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         while (true) {
+            try {
             System.out.println("Benvenuto in UrbanTransit System!");
             System.out.println("1 - Sono un utente");
             System.out.println("2 - Sono un amministratore");
@@ -51,6 +52,11 @@ public class Application {
                     break;
                 default:
                     System.out.println("Scelta non valida. Riprova.");
+            }
+
+            } catch (InputMismatchException e) {
+                System.out.println("Errore: Inserisci un numero valido.");
+                scanner.nextLine();
             }
         }
     }
@@ -356,6 +362,7 @@ public class Application {
 
     private static void gestisciMezzi(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezziDAO) {
         while (true) {
+            try{
             System.out.println("Gestione Mezzi:");
             System.out.println("1 - Gestione autobus");
             System.out.println("2 - Gestione Tram");
@@ -379,11 +386,17 @@ public class Application {
                 default:
                     System.out.println("Scelta non valida. Riprova.");
             }
+
+            } catch (InputMismatchException e) {
+                System.out.println("Errore: Inserisci un numero valido.");
+                scanner.nextLine();
+            }
         }
     }
 
     private static void gestisciAutobus(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezziDAO) {
         while (true) {
+            try{
             System.out.println("Gestione Autobus:");
             System.out.println("1 - Lista autobus");
             System.out.println("2 - Trova autobus per id");
@@ -411,11 +424,17 @@ public class Application {
                 default:
                     System.out.println("Scelta non valida. Riprova.");
             }
+
+            } catch (InputMismatchException e) {
+                System.out.println("Errore: Inserisci un numero valido.");
+                scanner.nextLine();
+            }
         }
     }
 
     private static void gestisciTram(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezziDAO) {
         while (true) {
+            try {
             System.out.println("Gestione Tram:");
             System.out.println("1 - Lista tram");
             System.out.println("2 - Trova tram per id");
@@ -443,11 +462,17 @@ public class Application {
                 default:
                     System.out.println("Scelta non valida. Riprova.");
             }
+
+            } catch (InputMismatchException e) {
+                System.out.println("Errore: Inserisci un numero valido.");
+                scanner.nextLine();
+            }
         }
     }
 
     private static void gestisciTratte(Scanner scanner, TrattaDAO trattaDAO) {
         while (true) {
+            try{
             System.out.println("Gestione Tratte:");
             System.out.println("1 - Aggiungi tratta");
             System.out.println("2 - Modifica tratta");
@@ -474,6 +499,11 @@ public class Application {
                     return;
                 default:
                     System.out.println("Scelta non valida. Riprova.");
+            }
+
+            } catch (InputMismatchException e) {
+                System.out.println("Errore: Inserisci un numero valido.");
+                scanner.nextLine();
             }
         }
     }
@@ -653,10 +683,24 @@ public class Application {
             UUID id = UUID.fromString(idStr);
             Tessera tessera = tesseraDAO.trovaTesseraPerId(id);
 
+
             if (tessera != null) {
-                System.out.println("Inserisci nuova data di inizio tessera (dd/MM/yyyy) (attuale: " + tessera.getData_inizio().format(formatter) + "):");
-                String nuovaDataInizioStr = scanner.nextLine();
-                LocalDate nuovaDataInizio = LocalDate.parse(nuovaDataInizioStr, formatter);
+                LocalDate nuovaDataInizio = null;
+                while (nuovaDataInizio == null) {
+                    System.out.println("Inserisci nuova data di inizio tessera (dd/MM/yyyy) (attuale: " + tessera.getData_inizio().format(formatter) + "):");
+                    String nuovaDataInizioStr = scanner.nextLine();
+
+                    try {
+                        nuovaDataInizio = LocalDate.parse(nuovaDataInizioStr, formatter);
+
+                        if (nuovaDataInizio.isBefore(LocalDate.now())) {
+                            System.out.println("La data inserita deve essere dopo della data di inizio passata. Inserisci una data valida.");
+                            nuovaDataInizio = null;
+                        }
+                    } catch (DateTimeParseException e) {
+                        System.out.println("Formato della data non valido. Riprova.");
+                    }
+                }
                 tessera.setData_inizio(nuovaDataInizio);
                 tessera.setData_scadenza(nuovaDataInizio.plusYears(1));
 
@@ -701,9 +745,18 @@ public class Application {
     private static void aggiungiDistributore(Scanner scanner, DistributoriDAO distributoriDAO) {
         System.out.println("Inserisci l'indirizzo del distributore:");
         String indirizzo = scanner.nextLine();
-        System.out.println("Inserisci lo stato del distributore (ATTIVO/FUORI_SERVIZIO):");
-        String stato = scanner.nextLine();
-        Stato_Distributori statoDistributori = Stato_Distributori.valueOf(stato.toUpperCase());
+
+        Stato_Distributori statoDistributori = null;
+        while (statoDistributori == null) {
+            System.out.println("Inserisci lo stato del distributore (ATTIVO/FUORI_SERVIZIO):");
+            String stato = scanner.nextLine().toUpperCase();
+
+            try {
+                statoDistributori = Stato_Distributori.valueOf(stato);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Stato non valido. Inserisci 'ATTIVO' o 'FUORI_SERVIZIO'.");
+            }
+        }
 
         Distributori nuovoDistributore = new Distributori();
         nuovoDistributore.setIndirizzo(indirizzo);
@@ -712,7 +765,6 @@ public class Application {
         distributoriDAO.salvaDistributore(nuovoDistributore);
         System.out.println("Distributore aggiunto con successo! ID: " + nuovoDistributore.getId());
     }
-
     private static void modificaDistributore(Scanner scanner, DistributoriDAO distributoriDAO) {
         System.out.println("Inserisci l'ID del distributore da modificare:");
         String idStr = scanner.nextLine();
@@ -725,11 +777,19 @@ public class Application {
                 String nuovoIndirizzo = scanner.nextLine();
                 distributore.setIndirizzo(nuovoIndirizzo);
 
-                System.out.println("Inserisci nuovo stato (attuale: " + distributore.getStato_distribrutori() + "):");
-                String nuovoStato = scanner.nextLine();
-                Stato_Distributori statoDistributori = Stato_Distributori.valueOf(nuovoStato.toUpperCase());
-                distributore.setStato_distribrutori(statoDistributori);
+                Stato_Distributori statoDistributori = null;
+                while (statoDistributori == null) {
+                    System.out.println("Inserisci nuovo stato tra 'ATTIVO' o 'FUORI_SERVIZIO' (attuale: " + distributore.getStato_distribrutori() + "):");
+                    String nuovoStato = scanner.nextLine().toUpperCase();
 
+                    try {
+                        statoDistributori = Stato_Distributori.valueOf(nuovoStato);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Stato non valido. Inserisci 'ATTIVO' o 'FUORI_SERVIZIO'.");
+                    }
+                }
+
+                distributore.setStato_distribrutori(statoDistributori);
                 distributoriDAO.aggiornaDistributore(distributore);
                 System.out.println("Distributore aggiornato con successo!");
             } else {
@@ -739,6 +799,7 @@ public class Application {
             System.out.println("Formato UUID non valido.");
         }
     }
+
 
     private static void eliminaDistributore(Scanner scanner, DistributoriDAO distributoriDAO) {
         System.out.println("Inserisci l'ID del distributore da eliminare:");
@@ -784,18 +845,36 @@ public class Application {
             Distributori distributore = distributoriDAO.trovaDistributorePerId(id);
 
             if (distributore != null) {
-                System.out.println("Inserisci data di inizio (dd/MM/yyyy):");
-                String dataInizioStr = scanner.nextLine();
-                LocalDate dataInizio = LocalDate.parse(dataInizioStr, formatter);
+                LocalDate dataInizio = null;
+                while (dataInizio == null) {
+                    System.out.println("Inserisci data di inizio (dd/MM/yyyy):");
+                    String dataInizioStr = scanner.nextLine();
+                    try {
+                        dataInizio = LocalDate.parse(dataInizioStr, formatter);
+                    } catch (DateTimeParseException e) {
+                        System.out.println("Formato data di inizio non valido. Inserisci nuovamente la data (dd/MM/yyyy).");
+                    }
+                }
 
-                System.out.println("Inserisci data di fine (dd/MM/yyyy):");
-                String dataFineStr = scanner.nextLine();
-                LocalDate dataFine = LocalDate.parse(dataFineStr, formatter);
+                LocalDate dataFine = null;
+                while (dataFine == null) {
+                    System.out.println("Inserisci data di fine (dd/MM/yyyy):");
+                    String dataFineStr = scanner.nextLine();
+                    try {
+                        dataFine = LocalDate.parse(dataFineStr, formatter);
+                    } catch (DateTimeParseException e) {
+                        System.out.println("Formato data di fine non valido. Inserisci nuovamente la data (dd/MM/yyyy).");
+                    }
+                }
 
                 List<Biglietto> biglietti = distributoriDAO.trovaBigliettiEmessi(id, dataInizio, dataFine);
-                System.out.println("Biglietti emessi dal distributore:");
-                for (Biglietto biglietto : biglietti) {
-                    System.out.println("ID Biglietto: " + biglietto.getId() + ", Data Emissione: " + biglietto.getData_emissione());
+                if (biglietti.isEmpty()) {
+                    System.out.println("Nessun biglietto emesso nel periodo specificato.");
+                } else {
+                    System.out.println("Biglietti emessi dal distributore:");
+                    for (Biglietto biglietto : biglietti) {
+                        System.out.println("ID Biglietto: " + biglietto.getId() + ", Data Emissione: " + biglietto.getData_emissione());
+                    }
                 }
             } else {
                 System.out.println("Distributore non trovato.");
@@ -805,28 +884,49 @@ public class Application {
         }
     }
 
+
     private static void ottieniAbbonamentiEmessiDaDistributore(Scanner scanner, DateTimeFormatter formatter, AbbonamentoDAO abbonamentoDAO) {
         System.out.println("Inserisci l'ID del distributore:");
         String idStr = scanner.nextLine();
         try {
             UUID id = UUID.fromString(idStr);
-            System.out.println("Inserisci data di inizio (dd/MM/yyyy):");
-            String dataInizioStr = scanner.nextLine();
-            LocalDate dataInizio = LocalDate.parse(dataInizioStr, formatter);
 
-            System.out.println("Inserisci data di fine (dd/MM/yyyy):");
-            String dataFineStr = scanner.nextLine();
-            LocalDate dataFine = LocalDate.parse(dataFineStr, formatter);
+            LocalDate dataInizio = null;
+            while (dataInizio == null) {
+                System.out.println("Inserisci data di inizio (dd/MM/yyyy):");
+                String dataInizioStr = scanner.nextLine();
+                try {
+                    dataInizio = LocalDate.parse(dataInizioStr, formatter);
+                } catch (DateTimeParseException e) {
+                    System.out.println("Formato data di inizio non valido. Inserisci nuovamente la data (dd/MM/yyyy).");
+                }
+            }
+
+            LocalDate dataFine = null;
+            while (dataFine == null) {
+                System.out.println("Inserisci data di fine (dd/MM/yyyy):");
+                String dataFineStr = scanner.nextLine();
+                try {
+                    dataFine = LocalDate.parse(dataFineStr, formatter);
+                } catch (DateTimeParseException e) {
+                    System.out.println("Formato data di fine non valido. Inserisci nuovamente la data (dd/MM/yyyy).");
+                }
+            }
 
             List<Abbonamento> abbonamenti = abbonamentoDAO.trovaAbbonamentiEmessiDaRivenditore(id, dataInizio, dataFine);
-            System.out.println("Abbonamenti emessi dal distributore:");
-            for (Abbonamento abbonamento : abbonamenti) {
-                System.out.println("ID Abbonamento: " + abbonamento.getId() + ", Data Inizio: " + abbonamento.getData_inizio());
+            if (abbonamenti.isEmpty()) {
+                System.out.println("Nessun abbonamento emesso nel periodo specificato.");
+            } else {
+                System.out.println("Abbonamenti emessi dal distributore:");
+                for (Abbonamento abbonamento : abbonamenti) {
+                    System.out.println("ID Abbonamento: " + abbonamento.getId() + ", Data Inizio: " + abbonamento.getData_inizio());
+                }
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Formato UUID non valido.");
         }
     }
+
 
     //GESTIONE RIVENDITORI
 
@@ -921,18 +1021,36 @@ public class Application {
             Rivenditori rivenditore = rivenditoriDAO.trovaRivenditorePerId(id);
 
             if (rivenditore != null) {
-                System.out.println("Inserisci data di inizio (dd/MM/yyyy):");
-                String dataInizioStr = scanner.nextLine();
-                LocalDate dataInizio = LocalDate.parse(dataInizioStr, formatter);
+                LocalDate dataInizio = null;
+                while (dataInizio == null) {
+                    System.out.println("Inserisci data di inizio (dd/MM/yyyy):");
+                    String dataInizioStr = scanner.nextLine();
+                    try {
+                        dataInizio = LocalDate.parse(dataInizioStr, formatter);
+                    } catch (DateTimeParseException e) {
+                        System.out.println("Formato data di inizio non valido. Inserisci nuovamente la data (dd/MM/yyyy).");
+                    }
+                }
 
-                System.out.println("Inserisci data di fine (dd/MM/yyyy):");
-                String dataFineStr = scanner.nextLine();
-                LocalDate dataFine = LocalDate.parse(dataFineStr, formatter);
+                LocalDate dataFine = null;
+                while (dataFine == null) {
+                    System.out.println("Inserisci data di fine (dd/MM/yyyy):");
+                    String dataFineStr = scanner.nextLine();
+                    try {
+                        dataFine = LocalDate.parse(dataFineStr, formatter);
+                    } catch (DateTimeParseException e) {
+                        System.out.println("Formato data di fine non valido. Inserisci nuovamente la data (dd/MM/yyyy).");
+                    }
+                }
 
                 List<Biglietto> biglietti = rivenditoriDAO.trovaBigliettiEmessi(id, dataInizio, dataFine);
-                System.out.println("Biglietti emessi dal rivenditore:");
-                for (Biglietto biglietto : biglietti) {
-                    System.out.println("ID Biglietto: " + biglietto.getId() + ", Data Emissione: " + biglietto.getData_emissione());
+                if (biglietti.isEmpty()) {
+                    System.out.println("Nessun biglietto emesso nel periodo specificato.");
+                } else {
+                    System.out.println("Biglietti emessi dal rivenditore:");
+                    for (Biglietto biglietto : biglietti) {
+                        System.out.println("ID Biglietto: " + biglietto.getId() + ", Data Emissione: " + biglietto.getData_emissione());
+                    }
                 }
             } else {
                 System.out.println("Rivenditore non trovato.");
@@ -942,28 +1060,49 @@ public class Application {
         }
     }
 
+
     private static void ottieniAbbonamentiEmessiDaRivenditore(Scanner scanner, DateTimeFormatter formatter, AbbonamentoDAO abbonamentoDAO) {
         System.out.println("Inserisci l'ID del rivenditore:");
         String idStr = scanner.nextLine();
         try {
             UUID id = UUID.fromString(idStr);
-            System.out.println("Inserisci data di inizio (dd/MM/yyyy):");
-            String dataInizioStr = scanner.nextLine();
-            LocalDate dataInizio = LocalDate.parse(dataInizioStr, formatter);
 
-            System.out.println("Inserisci data di fine (dd/MM/yyyy):");
-            String dataFineStr = scanner.nextLine();
-            LocalDate dataFine = LocalDate.parse(dataFineStr, formatter);
+            LocalDate dataInizio = null;
+            while (dataInizio == null) {
+                System.out.println("Inserisci data di inizio (dd/MM/yyyy):");
+                String dataInizioStr = scanner.nextLine();
+                try {
+                    dataInizio = LocalDate.parse(dataInizioStr, formatter);
+                } catch (DateTimeParseException e) {
+                    System.out.println("Formato data di inizio non valido. Inserisci nuovamente la data (dd/MM/yyyy).");
+                }
+            }
+
+            LocalDate dataFine = null;
+            while (dataFine == null) {
+                System.out.println("Inserisci data di fine (dd/MM/yyyy):");
+                String dataFineStr = scanner.nextLine();
+                try {
+                    dataFine = LocalDate.parse(dataFineStr, formatter);
+                } catch (DateTimeParseException e) {
+                    System.out.println("Formato data di fine non valido. Inserisci nuovamente la data (dd/MM/yyyy).");
+                }
+            }
 
             List<Abbonamento> abbonamenti = abbonamentoDAO.trovaAbbonamentiEmessiDaRivenditore(id, dataInizio, dataFine);
-            System.out.println("Abbonamenti emessi dal rivenditore:");
-            for (Abbonamento abbonamento : abbonamenti) {
-                System.out.println("ID Abbonamento: " + abbonamento.getId() + ", Data Inizio: " + abbonamento.getData_inizio());
+            if (abbonamenti.isEmpty()) {
+                System.out.println("Nessun abbonamento emesso nel periodo specificato.");
+            } else {
+                System.out.println("Abbonamenti emessi dal rivenditore:");
+                for (Abbonamento abbonamento : abbonamenti) {
+                    System.out.println("ID Abbonamento: " + abbonamento.getId() + ", Data Inizio: " + abbonamento.getData_inizio());
+                }
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Formato UUID non valido.");
         }
     }
+
 
     //METODI DI ACQUISTO BIGLIETTO/ABBONAMENTO
 
@@ -986,10 +1125,18 @@ public class Application {
         }
     }
 
-    private static void acquistaBiglietto(Scanner scanner, DateTimeFormatter formatter, BigliettoDAO bigliettoDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, UtenteDAO utenteDAO){
-        System.out.println("Sei in possesso di una tessera? (si/no)");
-        String haTessera = scanner.nextLine().trim().toLowerCase();
+    private static void acquistaBiglietto(Scanner scanner, DateTimeFormatter formatter, BigliettoDAO bigliettoDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, UtenteDAO utenteDAO) {
         Tessera tessera = null;
+        String haTessera = "";
+
+        while (!haTessera.equals("si") && !haTessera.equals("no")) {
+            System.out.println("Sei in possesso di una tessera? (si/no)");
+            haTessera = scanner.nextLine().trim().toLowerCase();
+
+            if (!haTessera.equals("si") && !haTessera.equals("no")) {
+                System.out.println("Input non valido. Inserisci 'si' o 'no'.");
+            }
+        }
 
         if (haTessera.equals("si")) {
             System.out.println("Inserisci l'ID della tessera:");
@@ -1003,51 +1150,66 @@ public class Application {
                     tessera = creaNuovaTessera(scanner, formatter, tesseraDAO, utenteDAO);
                 }
             } catch (IllegalArgumentException e) {
-                System.out.println("Formato UUID non valido.");
+                System.out.println("Formato UUID della tessera non valido.");
                 return;
             }
         } else {
             tessera = creaNuovaTessera(scanner, formatter, tesseraDAO, utenteDAO);
         }
 
-        System.out.println("Inserisci data di acquisto (dd/MM/yyyy):");
-        LocalDate dataInizio = LocalDate.parse(scanner.nextLine(), formatter);
+        LocalDate dataInizio = LocalDate.now();
+        System.out.println("Grazie per l'acquisto; " + dataInizio.format(formatter));
 
         System.out.println("Stai acquistando da un distributore o da un rivenditore?");
         System.out.println("1 - Distributore");
         System.out.println("2 - Rivenditore");
-        int sceltaEmittente = scanner.nextInt();
-        scanner.nextLine();
+
+        int sceltaEmittente = 0;
+        while (sceltaEmittente != 1 && sceltaEmittente != 2) {
+            try {
+                sceltaEmittente = Integer.parseInt(scanner.nextLine());
+                if (sceltaEmittente != 1 && sceltaEmittente != 2) {
+                    System.out.println("Scelta non valida. Inserisci 1 per Distributore o 2 per Rivenditore.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Inserimento non valido. Inserisci 1 per Distributore o 2 per Rivenditore.");
+            }
+        }
 
         if (sceltaEmittente == 1) {
             System.out.println("Inserisci ID del distributore:");
             String distributoreId = scanner.nextLine();
-            Distributori distributore = distributoriDAO.trovaDistributorePerId(UUID.fromString(distributoreId));
+            try {
+                Distributori distributore = distributoriDAO.trovaDistributorePerId(UUID.fromString(distributoreId));
 
-            if (distributore != null) {
-                Biglietto nuovoBiglietto = new Biglietto(dataInizio, tessera, distributore);
-                bigliettoDAO.createBiglietto(nuovoBiglietto);
-                System.out.println("Biglietto emesso da distributore aggiunto con successo! ID: " + nuovoBiglietto.getId());
-            } else {
-                System.out.println("Distributore non trovato.");
+                if (distributore != null) {
+                    Biglietto nuovoBiglietto = new Biglietto(dataInizio, tessera, distributore);
+                    bigliettoDAO.createBiglietto(nuovoBiglietto);
+                    System.out.println("Biglietto emesso da distributore aggiunto con successo! ID: " + nuovoBiglietto.getId());
+                } else {
+                    System.out.println("Distributore non trovato.");
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println("Formato UUID del distributore non valido.");
             }
         } else if (sceltaEmittente == 2) {
             System.out.println("Inserisci ID del rivenditore:");
             String rivenditoreId = scanner.nextLine();
-            Rivenditori rivenditore = rivenditoriDAO.trovaRivenditorePerId(UUID.fromString(rivenditoreId));
+            try {
+                Rivenditori rivenditore = rivenditoriDAO.trovaRivenditorePerId(UUID.fromString(rivenditoreId));
 
-            if (rivenditore != null) {
-                Biglietto nuovoBiglietto = new Biglietto(dataInizio, tessera, rivenditore);
-                bigliettoDAO.createBiglietto(nuovoBiglietto);
-                System.out.println("Abbonamento emesso da rivenditore aggiunto con successo! ID: " + nuovoBiglietto.getId());
-            } else {
-                System.out.println("Rivenditore non trovato.");
+                if (rivenditore != null) {
+                    Biglietto nuovoBiglietto = new Biglietto(dataInizio, tessera, rivenditore);
+                    bigliettoDAO.createBiglietto(nuovoBiglietto);
+                    System.out.println("Biglietto emesso da rivenditore aggiunto con successo! ID: " + nuovoBiglietto.getId());
+                } else {
+                    System.out.println("Rivenditore non trovato.");
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println("Formato UUID del rivenditore non valido.");
             }
-        } else {
-            System.out.println("Scelta non valida.");
         }
     }
-
 
     private static void acquistaAbbonamento(Scanner scanner, DateTimeFormatter formatter, AbbonamentoDAO abbonamentoDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, UtenteDAO utenteDAO) {
         System.out.println("Sei in possesso di una tessera? (si/no)");
