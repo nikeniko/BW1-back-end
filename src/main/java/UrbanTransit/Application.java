@@ -46,7 +46,7 @@ public class Application {
                     gestisciMenuUtente(scanner, formatter, utenteDAO, tesseraDAO, abbonamentoDAO, bigliettoDAO, distributoriDAO, rivenditoriDAO);
                     break;
                 case 2:
-                    gestisciMenuAmministratore(scanner, formatter, utenteDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, abbonamentoDAO, bigliettoDAO, mezziDAO);
+                    gestisciMenuAmministratore(scanner, formatter, utenteDAO, tesseraDAO, distributoriDAO, rivenditoriDAO, abbonamentoDAO, bigliettoDAO, mezziDAO, trattaDAO);
                     break;
                 default:
                     System.out.println("Scelta non valida. Riprova.");
@@ -91,7 +91,7 @@ public class Application {
         }
     }
 
-    private static void gestisciMenuAmministratore(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, AbbonamentoDAO abbonamentoDAO, BigliettoDAO bigliettoDAO, MezziDAO mezziDAO) {
+    private static void gestisciMenuAmministratore(Scanner scanner, DateTimeFormatter formatter, UtenteDAO utenteDAO, TesseraDAO tesseraDAO, DistributoriDAO distributoriDAO, RivenditoriDAO rivenditoriDAO, AbbonamentoDAO abbonamentoDAO, BigliettoDAO bigliettoDAO, MezziDAO mezziDAO, TrattaDAO trattaDAO) {
         System.out.println("Inserisci la password amministratore:");
         String password = scanner.nextLine();
 
@@ -125,7 +125,7 @@ public class Application {
                     gestisciMezzi(scanner, formatter, mezziDAO);
                     break;
                 case 5:
-                    System.out.println("Funzione non ancora disponibile.");
+                    gestisciTratte(scanner, trattaDAO);
                     break;
                 case 6:
                     return;
@@ -394,6 +394,38 @@ public class Application {
                     break;
                 case 4:
                     gestisciBigliettiVidimati(scanner, formatter, mezziDAO, Tipo_mezzo.TRAM);
+                    break;
+                case 5:
+                    return;
+                default:
+                    System.out.println("Scelta non valida. Riprova.");
+            }
+        }
+    }
+
+    private static void gestisciTratte(Scanner scanner, TrattaDAO trattaDAO) {
+        while (true) {
+            System.out.println("Gestione Tratte:");
+            System.out.println("1 - Aggiungi tratta");
+            System.out.println("2 - Modifica tratta");
+            System.out.println("3 - Elimina tratta");
+            System.out.println("4 - Lista tratte");
+            System.out.println("5 - Torna indietro");
+            int scelta = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (scelta) {
+                case 1:
+                    aggiungiTratta(scanner, trattaDAO);
+                    break;
+                case 2:
+                    modificaTratta(scanner, trattaDAO);
+                    break;
+                case 3:
+                    eliminaTratta(scanner, trattaDAO);
+                    break;
+                case 4:
+                    listaTratte(trattaDAO);
                     break;
                 case 5:
                     return;
@@ -1039,6 +1071,26 @@ public class Application {
     }
 
     //METODI GESTIONE TRATTA
+
+    private static void aggiungiTratta(Scanner scanner, TrattaDAO trattaDAO) {
+
+    }
+
+    private static void modificaTratta(Scanner scanner, TrattaDAO trattaDAO) {
+
+    }
+
+    private static void eliminaTratta(Scanner scanner, TrattaDAO trattaDAO) {
+
+    }
+
+    private static void listaTratte(TrattaDAO trattaDAO) {
+        
+    }
+
+
+
+
 
 
 
