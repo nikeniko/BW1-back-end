@@ -604,6 +604,15 @@ public class Application {
                 System.out.println("Inserisci nuova data di inizio tessera (dd/MM/yyyy) (attuale: " + tessera.getData_inizio().format(formatter) + "):");
                 String nuovaDataInizioStr = scanner.nextLine();
                 LocalDate nuovaDataInizio = LocalDate.parse(nuovaDataInizioStr, formatter);
+
+                LocalDate unAnnoFa = LocalDate.now().minusYears(1);
+                if (nuovaDataInizio.isBefore(unAnnoFa)){
+                    tessera.setStato_tessera(false);
+                    System.out.println("La tessera è scaduta. Contatta il rivenditore più vicino");
+                } else {
+                    tessera.setStato_tessera(true);
+                }
+
                 tessera.setData_inizio(nuovaDataInizio);
                 tessera.setData_scadenza(nuovaDataInizio.plusYears(1));
 
@@ -1101,7 +1110,34 @@ public class Application {
     }
 
     private static void modificaTratta(Scanner scanner, TrattaDAO trattaDAO) {
+        System.out.println("Inserisci l'ID della tratta da modificare:");
+        String idStr = scanner.nextLine();
+        try {
+            UUID id = UUID.fromString(idStr);
+            Tratta tratta = trattaDAO.getTrattaById(id);
 
+            if (tratta != null) {
+                System.out.println("Inserisci nuova zona di partenza (attuale: " + tratta.getZona_partenza() + "):");
+                String nuovaZonaPartenza = scanner.nextLine();
+                tratta.setZona_partenza(nuovaZonaPartenza);
+
+                System.out.println("Inserisci nuovo capolinea (attuale: " + tratta.getCapolinea() + "):");
+                String nuovoCapolinea = scanner.nextLine();
+                tratta.setCapolinea(nuovoCapolinea);
+
+                System.out.println("Inserisci nuovo tempo di percorrenza previsto (attuale: " + tratta.getTempo_percorrenza() + " minuti):");
+                int nuovoTempoPercorrenza = scanner.nextInt();
+                scanner.nextLine();
+                tratta.setTempo_percorrenza(nuovoTempoPercorrenza);
+
+                trattaDAO.updateTratta(id, nuovaZonaPartenza, nuovoCapolinea, nuovoTempoPercorrenza);
+                System.out.println("Tratta aggiornata con successo!");
+            } else {
+                System.out.println("Tratta non trovata.");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Formato UUID non valido.");
+        }
     }
 
     private static void eliminaTratta(Scanner scanner, TrattaDAO trattaDAO) {
