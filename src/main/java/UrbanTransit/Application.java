@@ -130,7 +130,8 @@ public class Application {
                 System.out.println("4 - Gestione Mezzi");
                 System.out.println("5 - Gestione Tratte");
                 System.out.println("6 - Gestisci biglietti vidimati");
-                System.out.println("7 - Esci");
+                System.out.println("7 - Calcola tempi di percorrenza effettivi");
+                System.out.println("8 - Esci");
                 int scelta = scanner.nextInt();
                 scanner.nextLine();
 
@@ -153,6 +154,8 @@ public class Application {
                     case 6:
                         gestisciBigliettiVidimati(scanner, timbratiDAO, mezzoDAO);
                     case 7:
+                        calcolaTempiPercorrenzaEffettivi(scanner, formatter, mezzoDAO, percorrenzaDAO, trattaDAO);
+                    case 8:
                         return;
                     default:
                         System.out.println("Scelta non valida. Riprova.");
@@ -1571,6 +1574,52 @@ public class Application {
 
     }
 
+    //METODI PERCORRENZA
 
+    private static void calcolaTempiPercorrenzaEffettivi(Scanner scanner, DateTimeFormatter formatter, MezziDAO mezziDAO, PercorrenzaDAO percorrenzaDAO, TrattaDAO trattaDAO) {
+        System.out.println("Inserisci l'ID del mezzo:");
+        String mezzoIdStr = scanner.nextLine();
+        try {
+            UUID mezzoId = UUID.fromString(mezzoIdStr);
+            Mezzi mezzo = mezziDAO.getMezzoById(mezzoId);
+
+            if (mezzo != null) {
+                Stato stato = mezzo.getStato(); // Otteniamo lo stato del mezzo
+                if (stato != null) {
+                    Percorrenza percorrenza = stato.getPercorrenza(); // Otteniamo la tratta associata
+
+                    if (percorrenza != null) {
+                        Tratta tratta = percorrenza.getTratta();
+
+                        if (tratta != null) {
+                            System.out.println("Inserisci la data per il calcolo (dd/MM/yyyy):");
+                            String dataStr = scanner.nextLine();
+                            LocalDate data = LocalDate.parse(dataStr, formatter);
+
+                            int tempoPercorrenzaPrevisto = tratta.getTempo_percorrenza() * mezzo.getNum_giri();
+                            int ritardoCasuale = new Random().nextInt(100) + 1; // Generiamo un ritardo casuale tra 1 e 100 minuti
+
+                            int tempoPercorrenzaEffettivo = tempoPercorrenzaPrevisto + ritardoCasuale;
+
+                            percorrenza.setTempo_effettivo(tempoPercorrenzaEffettivo);
+                            percorrenzaDAO.updatePercorrenza(percorrenza.getId(), tempoPercorrenzaEffettivo);
+
+                            System.out.println("Tempo di percorrenza effettivo calcolato e salvato: " + tempoPercorrenzaEffettivo + " minuti.");
+                        } else {
+                            System.out.println("La tratta associata a questa percorrenza non esiste.");
+                        }
+                    } else {
+                        System.out.println("Il mezzo selezionato non ha una percorrenza associata");
+                    }
+                } else {
+                    System.out.println("Il mezzo non ha uno stato attivo associato.");
+                }
+            } else {
+                System.out.println("Mezzo non trovato.");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Formato UUID non valido.");
+        }
+    }
 }
 
