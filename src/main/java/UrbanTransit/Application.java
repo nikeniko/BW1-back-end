@@ -1544,7 +1544,7 @@ public class Application {
 
     private static void associaTratta(Scanner scanner, MezziDAO mezziDAO, StatoDAO statoDAO, PercorrenzaDAO percorrenzaDAO, TrattaDAO trattaDAO) {
 
-        System.out.println("Inserisci l'ID dell'autobus a cui associare una tratta: ");
+        System.out.println("Inserisci l'ID del mezzo a cui associare una tratta: ");
         String autobusID = scanner.nextLine();
 
         Mezzi autobusTrovato = mezziDAO.getMezzoById(UUID.fromString(autobusID));
@@ -1554,7 +1554,7 @@ public class Application {
 
 
         if (statoTrovato.getStato_mezzo().equals(Stato_mezzo.IN_SERVIZIO)) {
-            System.out.println("Quale tratta vuoi associare a quest'autobus?");
+            System.out.println("Quale tratta vuoi associare a questo mezzo?");
             trattaDAO.trovaTutteTratte().stream().forEach(System.out::println);
 
             System.out.println("\nInserisci l'ID della tratta che vuoi associare: ");
