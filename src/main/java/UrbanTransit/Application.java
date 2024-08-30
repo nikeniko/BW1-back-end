@@ -1172,7 +1172,7 @@ public class Application {
         }
 
         LocalDate dataInizio = LocalDate.now();
-        System.out.println("Grazie per l'acquisto; " + dataInizio.format(formatter));
+        //System.out.println("Grazie per l'acquisto; " + dataInizio.format(formatter));
 
         System.out.println("Stai acquistando da un distributore o da un rivenditore?");
         System.out.println("1 - Distributore");
